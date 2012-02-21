@@ -1,2 +1,16 @@
-First try to create a small gui for the mtx tool, so dont expect to much it's
-under construction still.
+First try to create a small gui for the mtx tool, so dont expect to much it's under construction still.
+
+Short example to use the gui:
+
+ - download the sourcecode
+ - run it in a console:  $ sudo python /path_to_the_repository/mtx-gui/app.py
+
+If you have a Mediachanger the gui should show it as a button with the device name on it,
+simply click the button and you'll get two new columns with the Data Slots and the Storage Slots.
+To load or unload media to the Media changer simply right click on a Data or Storage Slot, green Storage Slots should get a menu with a load option
+and if a Data Slot has a medium loaded you'll get a menu for unload it to one of the Storage slots.
+
+some things to come:
+ - Statusbar for the return values of the mtx tool (for now you just see it on the console)
+ - Documentation ( I know its not usefull for now)
+ 
