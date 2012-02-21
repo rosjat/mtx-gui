@@ -42,6 +42,7 @@ class ScsiChanger(object):
 
     @staticmethod
     def query(self,query,slot=None):
+        print slot
         if query in self._queries:
             if slot:
                 cmd = query % (self.device, slot)
@@ -173,5 +174,6 @@ class MediumChanger(ScsiChanger):
         self.update(ScsiChanger.query(self,ScsiChanger._mtx_status_query))
 
     def unload(self,to_slot):
+        print to_slot
         ScsiChanger.unload(self,to_slot)
         self.update(ScsiChanger.query(self,ScsiChanger._mtx_status_query))

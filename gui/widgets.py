@@ -1,6 +1,10 @@
 # coding: utf-8
 '''collection of the widgets that are used in the gui'''
 import os
+import sys
+from functools import partial
+
+
 from Tkinter import Label, Button , Menu, PhotoImage, Frame, Canvas, Scrollbar
 
 # remember the image folder
@@ -71,6 +75,10 @@ class SlotLabel(Label):
     def check_slot(self):
         print 'if you see this you did it wrong !!!'
 
+    @classmethod
+    def menu_action(self,slot):
+        print 'if you see this you did it wrong !!!'
+
 class StorageLabel(SlotLabel):
     '''class for the storage label '''
     def __init__(self, parent, slot):
@@ -87,15 +95,15 @@ class StorageLabel(SlotLabel):
             #self.check_slot()
 
     def onRightClick(self, event):
-        popup = Menu(self,tearoff=0)
         if self.slot.status == 'Full ':
-            popup.add_command(label='load',
-                    command=lambda: self.slot.device.load(self.slot.slot))
-        try:
-            popup.tk_popup(event.x_root, event.y_root, 0)
-        finally:
-            popup.grab_release()
-            self.updated()
+            popup = Menu(self,tearoff=0)
+            popup.add_command(label= u'load',
+                        command=lambda: self.slot.device.load(self.slot.slot))
+            try:
+                popup.tk_popup(event.x_root, event.y_root, 0)
+            finally:
+                popup.grab_release()
+                self.updated()
 
     def updated(self):
         if self.slot.status == 'Empty':
@@ -126,16 +134,22 @@ class DataLabel(SlotLabel):
                 self.background = 'orange'
 
     def onRightClick(self, event):
-        popup = Menu(self,tearoff=0)
         if self.slot.status != 'Empty':
-            popup.add_command(label='unload',
-                        command=lambda: self.slot.device.unload(
-                                self.slot.device.loaded))
-        try:
-            popup.tk_popup(event.x_root, event.y_root, 0)
-        finally:
-            popup.grab_release()
-            self.updated()
+            popup = Menu(self,tearoff=0)
+            unloadmenu = Menu(self, tearoff = 0)
+            for slot in self.slot.device.storage_slots:
+                if slot.status == 'Empty':
+                    unloadmenu.add_command(label= u'storage slot %s' % slot.slot,
+                        command=partial(self.menu_action, slot.slot))
+            popup.add_cascade(label='unload',menu =unloadmenu)
+            try:
+                popup.tk_popup(event.x_root, event.y_root, 0)
+            finally:
+                popup.grab_release()
+                self.updated()
+
+    def menu_action(self, slot):
+        self.slot.device.unload(slot)
 
     def updated(self):
         if type(self.slot.status).__name__ == 'tuple':
@@ -195,20 +209,22 @@ class MediumChangerButton(Button):
 class ScrollFrame(Frame):
 
     def __init__(self, parent, medium_changers=None,device=None):
-        #self._device = device
         Frame.__init__(self, master=parent)
+        # init all the stuff we need later on
         self._widgets = None
         self._medium_changers = medium_changers
         self._device = device
+        # trick part, get this damn thing scrolling in the right place
         self.grid(stick='nsew')
         self.rowconfigure(0,weight=1)
         self.columnconfigure(0,weight=1)
-        self.config(height= 400, width= 300)
-
+        self.config(height= 380, width= 300)
+        self.grid_propagate(0)
+        # with a little help, preparing the scrollbar. The final setup happens
+        # in the special Slot Class
         self._sbar = AutoScrollbar(self)
         self._sbar.grid(row=0,column=1,stick='ns')
-
-        self._canv = Canvas(self, yscrollcommand=self.sbar.set)
+        self._canv = Canvas(self, yscrollcommand=self._sbar.set)
         self._canv.grid(row=0,column=0,stick='nswe')
         self._sbar.config(command=self._canv.yview)
         self.createWidgets()
@@ -275,7 +291,7 @@ class StorageFrame(ScrollFrame):
             labels =[]
             f = Frame(self.canv)
             f.rowconfigure(0, weight=1)
-
+            f.columnconfigure(0, weight=1)
             for slot in self.device.storage_slots:
                 label = StorageLabel(f,slot)
                 labels.append(label)
@@ -305,6 +321,7 @@ class DataFrame(ScrollFrame):
 # ----------------------- Scrollbars -------------------------------------------
 
 class AutoScrollbar(Scrollbar):
+    ''' Autoscrollbar by Fredrik Lundh '''
     # a scrollbar that hides itself if it's not needed.  only
     # works if you use the grid geometry manager.
     def set(self, lo, hi):
