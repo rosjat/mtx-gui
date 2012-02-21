@@ -98,12 +98,15 @@ class StorageLabel(SlotLabel):
         if self.slot.status == 'Full ':
             popup = Menu(self,tearoff=0)
             popup.add_command(label= u'load',
-                        command=lambda: self.slot.device.load(self.slot.slot))
+                        command=partial(self.menu_action, self.slot.slot))
             try:
                 popup.tk_popup(event.x_root, event.y_root, 0)
             finally:
                 popup.grab_release()
                 self.updated()
+
+    def menu_action(self, slot):
+        self.slot.device.load(slot)
 
     def updated(self):
         if self.slot.status == 'Empty':

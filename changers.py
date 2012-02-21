@@ -42,7 +42,6 @@ class ScsiChanger(object):
 
     @staticmethod
     def query(self,query,slot=None):
-        print slot
         if query in self._queries:
             if slot:
                 cmd = query % (self.device, slot)
@@ -67,7 +66,6 @@ class ScsiChanger(object):
         result = ScsiChanger.query(cls,ScsiChanger._mtx_load_query,slot)
         if result[0].find('done') != -1:
             cls.loaded = slot
-        print result
         return result
 
     @staticmethod
@@ -78,7 +76,6 @@ class ScsiChanger(object):
             result = ScsiChanger.query(cls,ScsiChanger._mtx_unload_query,to_slot)
         if result[0].find('done') != -1:
             cls.loaded = None
-        print result
         return result
 
     @property
@@ -174,6 +171,5 @@ class MediumChanger(ScsiChanger):
         self.update(ScsiChanger.query(self,ScsiChanger._mtx_status_query))
 
     def unload(self,to_slot):
-        print to_slot
         ScsiChanger.unload(self,to_slot)
         self.update(ScsiChanger.query(self,ScsiChanger._mtx_status_query))
