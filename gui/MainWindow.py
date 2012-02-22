@@ -52,3 +52,4 @@ class MainWindow(Frame):
 
     def createWidgets(self):
         self.changerframe = ChangerFrame(self,self.mediumchangers)
+        self.statusbar = StatusBar(self)

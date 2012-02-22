@@ -7,8 +7,8 @@ if __name__ == "__main__":
     try:
         _medium_changers = get_medium_changers()
         root = Tk()
-        root.config(width = 900, height = 400)
-        root.grid_propagate(0)
+        root.config( height = 400)
+        root.grid_propagate(1)
         root.resizable(0,0)
         guiFrame = MainWindow(root,medium_changers = _medium_changers)
         root.mainloop()

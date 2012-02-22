@@ -66,7 +66,7 @@ class ScsiChanger(object):
         result = ScsiChanger.query(cls,ScsiChanger._mtx_load_query,slot)
         if result[0].find('done') != -1:
             cls.loaded = slot
-        return result
+        cls.last_msg = result
 
     @staticmethod
     def unload(cls, to_slot):
@@ -76,11 +76,19 @@ class ScsiChanger(object):
             result = ScsiChanger.query(cls,ScsiChanger._mtx_unload_query,to_slot)
         if result[0].find('done') != -1:
             cls.loaded = None
-        return result
+        cls.last_msg = result
 
     @property
     def me(self):
         return self._me
+
+    @property
+    def last_msg(self):
+        return self._last_msg
+
+    @last_msg.setter
+    def last_msg(self, value):
+        self._last_msg = value
 
     def __init__(self, device=None):
         self._loaded = None
@@ -88,6 +96,7 @@ class ScsiChanger(object):
         self._me = self
         self._device_type = None
         self._inquiry_data = self.get_inquiry_data(self)
+        self._last_msg =''
 
 class MediumChanger(ScsiChanger):
     '''Class to collect and manipulate medium cahnger data that is collected

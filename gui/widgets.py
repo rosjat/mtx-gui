@@ -107,6 +107,9 @@ class StorageLabel(SlotLabel):
 
     def menu_action(self, slot):
         self.slot.device.load(slot)
+        #TODO: this cant be the final solution
+        self.master.master.master.master.statusbar.config(
+                                            text = self.slot.device.last_msg)
 
     def updated(self):
         if self.slot.status == 'Empty':
@@ -153,6 +156,9 @@ class DataLabel(SlotLabel):
 
     def menu_action(self, slot):
         self.slot.device.unload(slot)
+        #TODO: this cant be the final solution
+        self.master.master.master.statusbar.config(
+                                            text = self.slot.device.last_msg)
 
     def updated(self):
         if type(self.slot.status).__name__ == 'tuple':
@@ -175,6 +181,7 @@ class DataLabel(SlotLabel):
 class MediumChangerButton(Button):
 
     def __init__(self, parent, device,row):
+        self._defaultcolor = parent.cget('bg')
         self._device = device
         self._text = device.device
         self._icon = PhotoImage(file='%s/%s'%(_imagepath,'mc.gif'))
@@ -206,6 +213,11 @@ class MediumChangerButton(Button):
                                 self.master.master.master,event.widget.device)
         self.master.master.master.storageframe= StorageFrame(
                                 self.master.master.master,event.widget.device)
+        #reset the bg of all mediachanger buttons
+        for mediachanger in self.master.master.widgets:
+            mediachanger.config(bg=self._defaultcolor)
+        #set the bg of the clicked button
+        self.config(bg='lightgreen')
 
 #------------------------------ Frames -----------------------------------------
 
@@ -338,3 +350,21 @@ class AutoScrollbar(Scrollbar):
         raise TclError, "cannot use pack with this widget"
     def place(self, **kw):
         raise TclError, "cannot use place with this widget"
+
+
+class StatusBar(Label):
+
+    def __init__(self,parent):
+        Label.__init__(self,parent,text='',relief='sunken', anchor='w')
+        parent.master.stb= self
+        self.grid(column=0, columnspan=4, sticky='ew')
+        self._text =''
+
+    @property
+    def text(self):
+        return self._text
+
+    @text.setter
+    def text(self, value):
+        self._text = value
+        self.config(text= value)
