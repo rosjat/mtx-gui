@@ -36,35 +36,44 @@ class SlotLabel(Label):
 
     @property
     def icon(self):
+        '''return the gif displayed with the label'''
         return self._icon
 
     @icon.setter
     def icon(self, value):
+        '''set the gif displayed with the label '''
         self._icon = None
         self._icon = PhotoImage(file='%s/%s'%(_imagepath,value))
 
     @property
     def slot(self):
+        '''return the slot from the media changer device that should be
+           controled'''
         return self._slot
 
     @property
     def text(self):
+        '''return the text that is displayed with the label '''
         return self._text
 
     @text.setter
     def text(self, value):
+        '''set the text that is displayed on the label  '''
         self._text = value
 
     @property
     def background(self):
+        '''return the color for the label background'''
         return self._background
 
     @background.setter
     def background(self, value):
+        '''set the color for the label background'''
         self._background = value
 
     @classmethod
     def onRightClick(cls, event):
+        '''handle the right click event '''
         print 'if you see this you did it wrong !!!'
 
     @classmethod
@@ -123,7 +132,9 @@ class StorageLabel(SlotLabel):
 
     def check_slot(self):
         self.updated()
-        self.after(200,self.check_slot)
+        # its not a good idea but it will update the gui without a refesh button
+        # lets do it after 5 min
+        self.after(500,self.check_slot)
 
 class DataLabel(SlotLabel):
     '''class for the data label '''
@@ -174,7 +185,9 @@ class DataLabel(SlotLabel):
 
     def check_slot(self):
         self.updated()
-        self.after(200,self.check_slot)
+        # its not a good idea but it will update the gui without a refesh button
+        # lets do it after 5 min
+        self.after(500,self.check_slot)
 
 #-------------------------------- Buttons --------------------------------------
 
