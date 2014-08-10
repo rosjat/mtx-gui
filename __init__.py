@@ -1,7 +1,7 @@
 # coding: utf-8
 
-from gui.MainWindow import *
-from api import *
+from View.MainWindow import *
+from Model.api import *
 
 if __name__ == "__main__":
     try:

@@ -2,7 +2,7 @@
 
 import os
 import commands
-from changers import MediumChanger as mc
+from Changers.MediumChanger import MediumChanger as mc
 
 def check_root():
     if os.getuid() == 0:
