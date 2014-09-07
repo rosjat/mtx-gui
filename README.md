@@ -1,5 +1,5 @@
 mtx-gui
---------
+========
 
 This tool is my first try to create a simple gui for the commandline tool mtx.
 It has some evil hacks but it should work for simple task. It's basically a 
