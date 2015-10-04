@@ -1,6 +1,6 @@
 # coding: utf-8
 
-from View.MainWindow import *
+from mtx_gui.View.MainWindow import *
 from Model.api import *
 
 if __name__ == "__main__":
