@@ -1,16 +1,12 @@
 # coding: utf-8
-'''handle the main window of the View'''
+"""handle the main window of the View"""
+from tkinter import Frame
 
-import os
-from Tkinter import *
-import tkMessageBox
-
-from widgets import *
 
 class MainWindow(Frame):
 
     def __init__(self, master=None, datacontext=None):
-        ''' init the Frame instance'''
+        """init the Frame instance"""
         Frame.__init__(self, master)
         self._datacontext = datacontext
         self.init()
@@ -25,6 +21,6 @@ class MainWindow(Frame):
     def datacontext(self):
         return self._datacontext
 
-    @DataContext.setter
+    @datacontext.setter
     def datacontext(self, value):
         self._datacontext = value

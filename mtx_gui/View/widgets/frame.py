@@ -1,15 +1,14 @@
 # coding: utf-8
-'''collection of the widgets that are used in the View'''
-import os
-import sys
-from functools import partial
+"""collection of the widgets that are used in the View"""
+from tkinter import Frame, Canvas
+from .button import MediumChangerButton
+from .label import DataLabel, StorageLabel
+from .scrollbar import AutoScrollbar
 
-
-from Tkinter import Frame
 
 class ScrollFrame(Frame):
 
-    def __init__(self, parent, medium_changers=None,device=None):
+    def __init__(self, parent, medium_changers=None, device=None):
         Frame.__init__(self, master=parent)
         # init all the stuff we need later on
         self._widgets = None
@@ -24,9 +23,9 @@ class ScrollFrame(Frame):
         # with a little help, preparing the scrollbar. The final setup happens
         # in the special Slot Class
         self._sbar = AutoScrollbar(self)
-        self._sbar.grid(row=0,column=1,stick='ns')
+        self._sbar.grid(row=0, column=1, stick='ns')
         self._canv = Canvas(self, yscrollcommand=self._sbar.set)
-        self._canv.grid(row=0,column=0,stick='nswe')
+        self._canv.grid(row=0, column=0, stick='nswe')
         self._sbar.config(command=self._canv.yview)
         self.createWidgets()
 
@@ -56,31 +55,33 @@ class ScrollFrame(Frame):
 
     @classmethod
     def createWidgets(cls):
-        print 'if you see this you did it wrong !!!'
+        print('if you see this you did it wrong !!!')
+
 
 class ChangerFrame(ScrollFrame):
 
     def __init__(self, parent ,medium_changers):
-        ScrollFrame.__init__(self,parent,medium_changers=medium_changers)
+        ScrollFrame.__init__(self, parent, medium_changers=medium_changers)
         self.grid(row=0,column=0)
 
     def createWidgets(self):
-        '''creating all the widgets in the main window'''
+        """creating all the widgets in the main window"""
         if self.mediumchangers:
             # init the buttons for the medium
             counter = 0
             tmp = []
             for mc in self.mediumchangers:
-                b = MediumChangerButton(self.canv,mc,counter)
+                b = MediumChangerButton(self.canv, mc, counter)
                 tmp.append(b)
                 b = None
                 counter +=1
             self.widgets = tmp
 
+
 class StorageFrame(ScrollFrame):
 
     def __init__(self, parent, device):
-        ScrollFrame.__init__(self,parent,device=device)
+        ScrollFrame.__init__(self, parent, device=device)
         self.grid(row=0, column=2)
 
     def createWidgets(self):
@@ -102,11 +103,12 @@ class StorageFrame(ScrollFrame):
             self.canv.config(scrollregion=self.canv.bbox("all"))
             self.widgets = labels
 
+
 class DataFrame(ScrollFrame):
 
     def __init__(self, parent, device):
-        ScrollFrame.__init__(self,parent,device=device)
-        self.grid(row=0,column=1)
+        ScrollFrame.__init__(self, parent, device=device)
+        self.grid(row=0, column=1)
 
     def createWidgets(self):
         if self.widgets:
@@ -115,6 +117,6 @@ class DataFrame(ScrollFrame):
         else:
             labels =[]
             for slot in self.device.data_slots:
-                label = DataLabel(self.canv,slot)
+                label = DataLabel(self.canv, slot)
                 labels.append(label)
             self.widgets = labels
