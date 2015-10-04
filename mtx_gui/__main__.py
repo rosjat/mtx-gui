@@ -1,17 +1,5 @@
 # coding: utf-8
-from tkinter import Tk, messagebox
+from mtx_gui.Control.application import Application
 
-
-from mtx_gui.View.MainWindow import *
-from mtx_gui.Model.api import *
-
-try:
-    _medium_changers = get_medium_changers()
-    root = Tk()
-    root.config(height=400)
-    root.grid_propagate(1)
-    root.resizable(0,0)
-    guiFrame = MainWindow(root, datacontext=_medium_changers)
-    root.mainloop()
-except Exception as e:
-    messagebox.showinfo(title='mtxgui info', message=str(e))
+app = Application()
+app.run()
