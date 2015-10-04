@@ -14,7 +14,7 @@ I also changed dev_mr to the default branch!
 
 ## License
 
-Python-scsi is distributed under LGPLv2.1
+mtx-gui is distributed under LGPLv2.1
 Please see the LICENSE file for the full license text.
 
 
