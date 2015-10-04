@@ -1,5 +1,11 @@
-mtx-gui
-========
+# mtx-gui
+
+##  Update 2015-10-04
+
+This Version of mtx-gui will no longer be maintained by me but I'll leave only if someone really wants to
+try it ...
+
+### Description
 
 This tool is my first try to create a simple gui for the commandline tool mtx.
 It has some evil hacks but it should work for simple task. It's basically a 
@@ -17,6 +23,5 @@ To load or unload media to the Media changer simply right click on a Data or Sto
 and if a Data Slot has a medium loaded you'll get a menu for unload it to one of the Storage slots.
 A simple Statusbar will print out the last result that mtx returned.
 
-some things to come:
- - Documentation ( I know its not usefull for now)
+
  
