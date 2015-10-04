@@ -1,6 +1,21 @@
 # coding: utf-8
-'''collection of the widgets that are used in the View'''
-import os
-
+"""collection of the widgets that are used in the View"""
+from os import path
+from tkinter import Tk, messagebox
 # remember the image folder
-_imagepath = os.path.join(os.path.split(os.path.dirname(__file__))[0], 'img')
+_imagepath = path.join(path.split(path.dirname(__file__))[0], 'View/img')
+
+
+def create_tk_root():
+    root = Tk()
+    root.config(height=400)
+    root.grid_propagate(1)
+    root.resizable(0, 0)
+    return root
+
+
+def start_tk_gui(root):
+    try:
+        root.mainloop()
+    except Exception as e:
+        messagebox.showinfo(title='mtxgui info', message=str(e))

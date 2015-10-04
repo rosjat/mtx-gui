@@ -7,6 +7,12 @@ setup(name='mtx_gui',
       author='Markus Rosjat',
       author_email='markus.rosjat@gmail.com',
       description='Small GUI for managing Media changers',
-      packages=['mtx_gui', 'mtx_gui.Model', 'mtx_gui.View', 'mtx_gui.Control'], )
+      package_data={'mtx_gui.View.img': ['*.gif'], },
+      packages=['mtx_gui',
+                'mtx_gui.Model',
+                'mtx_gui.View',
+                'mtx_gui.View.widgets',
+                'mtx_gui.View.img',
+                'mtx_gui.Control'], )
 
 
