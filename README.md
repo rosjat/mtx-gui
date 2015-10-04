@@ -10,6 +10,8 @@ master branch
 since python-scsi now supports python 3 I started to organize the dev branch so I get a nice base for
 the next steps to come. MediumChange is now a pyscsi.SCSIDevice.
 
+I also changed dev_mr to the default branch!
+
 ## License
 
 Python-scsi is distributed under LGPLv2.1
