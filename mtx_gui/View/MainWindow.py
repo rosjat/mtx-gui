@@ -5,10 +5,9 @@ from tkinter import Frame
 
 class MainWindow(Frame):
 
-    def __init__(self, master=None, datacontext=None):
+    def __init__(self, master=None):
         """init the Frame instance"""
         Frame.__init__(self, master)
-        self._datacontext = datacontext
         self.init()
 
     def init(self):
@@ -16,11 +15,3 @@ class MainWindow(Frame):
         self.grid(stick='EWSN')
         self.grid_propagate(1)
         self.columnconfigure(0, weight=1)
-
-    @property
-    def datacontext(self):
-        return self._datacontext
-
-    @datacontext.setter
-    def datacontext(self, value):
-        self._datacontext = value

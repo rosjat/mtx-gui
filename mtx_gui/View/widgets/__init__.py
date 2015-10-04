@@ -1,1 +1,1 @@
-from .. import _imagepath
+from mtx_gui.View import _imagepath

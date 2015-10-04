@@ -1,14 +1,10 @@
 # coding: utf-8
-'''collection of the widgets that are used in the View'''
-import os
-import sys
-from functools import partial
+"""collection of the widgets that are used in the View"""
 
-
-from Tkinter import  Scrollbar
+from tkinter import  Scrollbar, TclError
 
 class AutoScrollbar(Scrollbar):
-    ''' Autoscrollbar by Fredrik Lundh '''
+    """Autoscrollbar by Fredrik Lundh"""
     # a scrollbar that hides itself if it's not needed.  only
     # works if you use the grid geometry manager.
     def set(self, lo, hi):
@@ -18,7 +14,9 @@ class AutoScrollbar(Scrollbar):
         else:
             self.grid()
         Scrollbar.set(self, lo, hi)
+
     def pack(self, **kw):
-        raise TclError, "cannot use pack with this widget"
+        raise TclError("cannot use pack with this widget")
+
     def place(self, **kw):
-        raise TclError, "cannot use place with this widget"
+        raise TclError("cannot use place with this widget")

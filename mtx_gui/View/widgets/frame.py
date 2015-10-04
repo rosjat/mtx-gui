@@ -1,9 +1,9 @@
 # coding: utf-8
 """collection of the widgets that are used in the View"""
 from tkinter import Frame, Canvas
-from .button import MediumChangerButton
-from .label import DataLabel, StorageLabel
-from .scrollbar import AutoScrollbar
+from mtx_gui.View.widgets.button import MediumChangerButton
+from mtx_gui.View.widgets.label import DataLabel, StorageLabel
+from mtx_gui.View.widgets.scrollbar import AutoScrollbar
 
 
 class ScrollFrame(Frame):
@@ -60,7 +60,7 @@ class ScrollFrame(Frame):
 
 class ChangerFrame(ScrollFrame):
 
-    def __init__(self, parent ,medium_changers):
+    def __init__(self, parent, medium_changers):
         ScrollFrame.__init__(self, parent, medium_changers=medium_changers)
         self.grid(row=0,column=0)
 
