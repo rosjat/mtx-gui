@@ -6,11 +6,17 @@ not functional right now because I just want to store it somewhere
 safe. But as you may noticed it's going in a different direction then the
 master branch
 
-### Update 2015-10-04
+## Updates 
+
+### 2015-10-04
 since python-scsi now supports python 3 I started to organize the dev branch so I get a nice base for
 the next steps to come. MediumChanger is now a pyscsi.SCSIDevice.
 
 I also changed dev_mr to the default branch!
+
+### 2015-10-06
+the gui can at least be started now, as long as you are doing it as root for the dev access and you should have
+a media changer or at least as iscsi target set up with tgt (for example)
 
 ## License
 
