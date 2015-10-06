@@ -15,10 +15,13 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+from pyscsi.pyscsi.scsi import SCSI
 from pyscsi.pyscsi.scsi_device import SCSIDevice
+from pyscsi.pyscsi import scsi_enum_modesense as MODESENSE6
+from pyscsi.pyscsi import scsi_enum_readelementstatus as READELEMENTSTATUS
 
 
-class MediumChanger(SCSIDevice):
+class MediumChanger(SCSI):
     """
         Class to collect and manipulate medium changer data that is collected
         with the python-scsi package.
@@ -26,9 +29,15 @@ class MediumChanger(SCSIDevice):
 
     _storage_slots = None
     _data_slots = None
+    _name = None
 
     def __init__(self, device=None):
-        SCSIDevice.__init__(self, device)
+        SCSI.__init__(self, SCSIDevice(device))
+        self._name = device
+
+    @property
+    def name(self):
+        return self._name
 
     @property
     def storage_slots(self):
@@ -46,17 +55,38 @@ class MediumChanger(SCSIDevice):
     def data_slots(self, value):
         self._data_slots = value
 
-    def get_storage_slots(self, result):
-        pass
+    def get_storage_slots(self):
+        eaa = self.modesense6(page_code=MODESENSE6.PAGE_CODE.ELEMENT_ADDRESS_ASSIGNMENT).result['mode_pages'][0]
+        se = self.readelementstatus(start=eaa['first_storage_element_address'],
+                                    num=eaa['num_storage_elements'],
+                                    element_type=READELEMENTSTATUS.ELEMENT_TYPE.STORAGE,
+                                    voltag=1,
+                                    curdata=1,
+                                    dvcid=1,
+                                    alloclen=16384).result['element_status_pages'][0]['element_descriptors']
+        self.storage_slots = se
 
     def update(self, result):
         pass
 
-    def get_data_slots(self, result):
-        pass
+    def get_data_slots(self):
+        eaa = self.modesense6(page_code=MODESENSE6.PAGE_CODE.ELEMENT_ADDRESS_ASSIGNMENT).result['mode_pages'][0]
+        dte = self.readelementstatus(start=eaa['first_data_transfer_element_address'],
+                                     num=eaa['num_data_transfer_elements'],
+                                     element_type=READELEMENTSTATUS.ELEMENT_TYPE.DATA_TRANSFER,
+                                     voltag=1,
+                                     curdata=1,
+                                     dvcid=1,
+                                     alloclen=16384).result['element_status_pages'][0]['element_descriptors']
+        self.data_slots = dte
 
     def load(self, slot):
         pass
 
     def unload(self, to_slot):
         pass
+
+    def is_medium_changer(self):
+        if self.inquiry().result['peripheral_device_type'] == 0x08:
+            return True
+        return False

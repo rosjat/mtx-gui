@@ -18,37 +18,59 @@ from pyscsi.pyscsi.scsi import SCSI
 
 from mtx_gui.View import create_tk_root, start_tk_gui
 from mtx_gui.View.MainWindow import MainWindow
-from mtx_gui.View.widgets.frame import ChangerFrame
+from mtx_gui.View.widgets.frame import ScrollFrame, DataFrame, StorageFrame
+from mtx_gui.View.widgets.button import MediumChangerButton
 from mtx_gui.Control.api import *
+from mtx_gui.Control.observable import Observable
 
 
-class Application(object):
+class Application(Observable):
     """ the controller class for the application
     """
     def __init__(self):
+        super().__init__()
         self._scsi = SCSI(None)
-        self._mc = [mc for mc in get_devices() if self.is_medium_changer(mc)]
-        self._main_gui = MainWindow(create_tk_root())
+        self._mc = [mc for mc in get_devices() if mc.model.is_medium_changer()]
+        self.view = MainWindow(create_tk_root())
+        self.model = self
+        self._ds = {}
+        self._ss = {}
 
     @property
     def mediumchangers(self):
         return self._mc
 
-    @property
-    def gui(self):
-        return self._main_gui
-
     def run(self):
         self.create_widgets()
-        start_tk_gui(self.gui)
+        start_tk_gui(self.view)
 
     def create_widgets(self):
-        ChangerFrame(self.gui, self.mediumchangers)
+        """creating all the widgets in the main window"""
+        sc = ScrollFrame(self.view)
+        counter = 0
+        for mc in self.mediumchangers:
+            mc.view = MediumChangerButton(sc.canv, mc)
+            mc.application_callback = self.event_sink
+            self.callbacks.update(mc.callbacks)
+            counter += 1
 
-    def is_medium_changer(self, dev):
-        self._scsi(dev.data)
-        # if self._scsi.inquiry().result['peripheral_device_type'] == 0x08:
-        if self._scsi.inquiry().result['peripheral_device_type'] == 0x05:  # for testing we don't use the 8 as dev type
-            return True
-        return False
+    def event_sink(self, callback_dict):
+        sender = callback_dict['sender']
+        event = callback_dict['event']
+        action = callback_dict['action']
+        # TODO: make this part less ugly by putting it in extra methods or functions
+        if type(sender) == MediumChangerObserver and action == 'init':
+            sender.model.get_data_slots()
+            sender.model.get_storage_slots()
+            self._ds.update({sender: get_data_slots(sender)})
+            self._ss.update({sender: get_storage_slots(sender)})
+            StorageFrame(self.view, self._ss[sender])
+            DataFrame(self.view, self._ds[sender])
+            for s in self._ss[sender]:
+                s.application_callback = self.event_sink
+            for s in self._ds[sender]:
+                s.application_callback = self.event_sink
+        if type(sender) == StorageSlotObserver and action == 'init':
+            print('storage Slot - left mouse button')
+
 

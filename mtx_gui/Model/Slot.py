@@ -12,6 +12,7 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
+
 __all__ = ['DataSlot', 'StorageSlot']
 
 
@@ -19,7 +20,7 @@ class Slot(object):
     """
         class to collect the Information of a storage slot of a  medium changer
     """
-    def __init__(self, device, name=None, status=None, slot=None, volumetag=None):
+    def __init__(self, slot):
         """
          :param device: reference to the medium changer were the slot belong to
          :param name : name of the storage slot element
@@ -29,11 +30,9 @@ class Slot(object):
                       slot
 
         """
-        self._name = name
-        self._status = status
         self._slot = slot
-        self._voltag = volumetag
-        self._device = device
+        self._voltag = slot['primary_volume_tag'][0:32]
+        self._status = slot['full']
 
     @property
     def device(self):

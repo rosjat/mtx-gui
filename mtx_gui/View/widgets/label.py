@@ -1,5 +1,22 @@
 # coding: utf-8
+
+# Copyright (C) 2015 by Markus Rosjat<markus.rosjat@gmail.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation; either version 2.1 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program; if not, see <http://www.gnu.org/licenses/>.
+
 """collection of the widgets that are used in the View"""
+
 from functools import partial
 from tkinter import Label, PhotoImage, Menu
 from . import _imagepath
@@ -27,8 +44,7 @@ class SlotLabel(Label):
                   stick='ew')
         self.master.grid_columnconfigure(0, minsize=300)
         self.grid_propagate(0)
-        self.bind("<Button-3>", self.onRightClick)
-        self.check_slot()
+        self.bind("<Button-1>", slot.onLeftClick)
 
     @property
     def icon(self):
@@ -70,32 +86,32 @@ class SlotLabel(Label):
         """handle the right click event"""
         print('if you see this you did it wrong !!!')
 
-    def updated(self):
-        print('if you see this you did it wrong !!!')
-
-    def check_slot(self):
-        print('if you see this you did it wrong !!!')
-
     def menu_action(self, slot):
+        print('if you see this you did it wrong !!!')
+
+    def set_visuals(self):
         print('if you see this you did it wrong !!!')
 
 
 class StorageLabel(SlotLabel):
     """class for the storage label"""
     def __init__(self, parent, slot):
-        if type(slot).__name__ != 'StorageSlot':
+        if type(slot).__name__ != 'StorageSlotObserver':
             self.destroy()
         else:
-            SlotLabel.__init__(self,parent, slot)
-            if self.slot.status == 'Empty':
-                self.text = u'%s - %s' % (self.slot.slot, self.slot.status)
-                self.background = 'red'
-            elif self.slot.status == 'Full ':
-                self.text = u'%s - %s' % (self.slot.slot, self.slot.volumetag)
-                self.background = 'green'
-            #self.check_slot()
+            SlotLabel.__init__(self, parent, slot)
+            self.set_visuals()
+
+    def set_visuals(self):
+        self.config(bg='green')
+        self.config(text=self.slot.model.volumetag.decode(encoding="utf-8", errors="strict"))
+        if not self.slot.model.status:
+            self.config(bg='red')
+            self.config(text='empty')
+        self.update_idletasks()
 
     def onRightClick(self, event):
+        """
         if self.slot.status == 'Full ':
             popup = Menu(self,tearoff=0)
             popup.add_command(label=u'load', command=partial(self.menu_action, self.slot.slot))
@@ -104,44 +120,35 @@ class StorageLabel(SlotLabel):
             finally:
                 popup.grab_release()
                 self.updated()
+        """
+        pass
 
     def menu_action(self, slot):
-        self.slot.device.load(slot)
+        # self.slot.device.load(slot)
         # TODO: this cant be the final solution
-        self.master.master.master.master.statusbar.config(text=self.slot.device.last_msg)
-
-    def updated(self):
-        if self.slot.status == 'Empty':
-            self.background = 'red'
-            self.text = u'%s - %s' % (self.slot.slot, self.slot.status)
-        elif self.slot.status == 'Full ':
-            self.background = 'green'
-            self.text = u'%s - %s' % (self.slot.slot, self.slot.volumetag)
-        self.config(text=self.text,bg=self.background, image=self.icon)
-        self.update_idletasks()
-
-    def check_slot(self):
-        self.updated()
-        # its not a good idea but it will update the View without a refresh button
-        # lets do it after 5 min
-        self.after(500, self.check_slot)
+        # self.master.master.master.master.statusbar.config(text=self.slot.device.last_msg)
+        pass
 
 
 class DataLabel(SlotLabel):
     """class for the data label"""
     def __init__(self, parent, slot):
-        if type(slot).__name__ != 'DataSlot':
+        if type(slot).__name__ != 'DataSlotObserver':
             self.destroy()
         else:
             SlotLabel.__init__(self, parent, slot)
-            if self.slot.status == 'Empty':
-                self.text = self.slot.status
-                self.background = self._defaultcolor
-            elif self.slot.status == 'Full ':
-                self.text = self.slot.status
-                self.background = 'orange'
+            self.set_visuals()
+
+    def set_visuals(self):
+        self.config(text=self.slot.model.volumetag)
+        self.config(bg='orange')
+        if not self.slot.model.status:
+            self.config(bg=self._defaultcolor)
+            self.config(text='empty')
+        self.update_idletasks()
 
     def onRightClick(self, event):
+        """
         if self.slot.status != 'Empty':
             popup = Menu(self,tearoff=0)
             unloadmenu = Menu(self, tearoff=0)
@@ -155,29 +162,14 @@ class DataLabel(SlotLabel):
             finally:
                 popup.grab_release()
                 self.updated()
+        """
+        pass
 
     def menu_action(self, slot):
-        self.slot.device.unload(slot)
+        # self.slot.device.unload(slot)
         # TODO: this cant be the final solution
-        self.master.master.master.statusbar.config(text=self.slot.device.last_msg)
-
-    def updated(self):
-        if type(self.slot.status).__name__ == 'tuple':
-            self.slot.status = self.slot.status[0]
-        if self.slot.status == 'Empty':
-            self.background = self._defaultcolor
-            self.text = self.slot.status
-        elif self.slot.status.find('Full ') != -1:
-            self.background = 'orange'
-            self.text = self.slot.status
-        self.config(text=self.text, bg=self.background, image=self.icon)
-        self.update_idletasks()
-
-    def check_slot(self):
-        self.updated()
-        # its not a good idea but it will update the View without a refresh button
-        # lets do it after 5 min
-        self.after(500, self.check_slot)
+        # self.master.master.master.statusbar.config(text=self.slot.device.last_msg)
+        pass
 
 
 class StatusBar(Label):
