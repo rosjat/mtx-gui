@@ -14,12 +14,13 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
-
 """collection of the widgets that are used in the View"""
-
+import logging
 from tkinter import Frame, Canvas
 from mtx_gui.View.widgets.label import DataLabel, StorageLabel
 from mtx_gui.View.widgets.scrollbar import AutoScrollbar
+
+modul_logger = logging.getLogger('mtx-gui.view.widgets.frame')
 
 
 class ScrollFrame(Frame):

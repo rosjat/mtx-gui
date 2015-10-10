@@ -14,12 +14,12 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
-
 """collection of the widgets that are used in the View"""
-
+import logging
 from tkinter import Button, PhotoImage
 from . import _imagepath
 
+modul_logger = logging.getLogger('mtx-gui.view.widgets.button')
 
 class MediumChangerButton(Button):
     """
@@ -37,6 +37,7 @@ class MediumChangerButton(Button):
             :param parent: the parent widget
             :param mc: a medium changer observable instance
         """
+        Button.__init__(self, master=parent, compound='left')
         self._init_properties(parent, mc)
         self._init_bindings(mc)
 
@@ -62,11 +63,8 @@ class MediumChangerButton(Button):
         self._defaultcolor = parent.cget('bg')
         self._text = mc.model.name
         self.icon = PhotoImage(file='%s/%s' % (_imagepath, 'mc.gif'))
-        Button.__init__(self,
-                        master=parent,
-                        image=self.icon,
-                        text=self._text,
-                        compound='left')
+        self.config(image=self.icon,
+                    text=self._text, )
         self.master.grid_columnconfigure(0, minsize=280)
         self.grid(padx=10,
                   pady=10,

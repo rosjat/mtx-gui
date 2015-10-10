@@ -17,11 +17,14 @@
 
 import os
 import subprocess
+import logging
 from glob import glob
 
 from mtx_gui.Model.MediumChanger import MediumChanger
 from mtx_gui.Model.Slot import StorageSlot, DataSlot
 from mtx_gui.Control.observable import MediumChangerObserver, StorageSlotObserver, DataSlotObserver
+
+modul_logger = logging.getLogger('mtx-gui.control.api')
 
 _scsi_devs = glob('/dev/sg*')
 

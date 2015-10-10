@@ -14,10 +14,11 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
-
 """handle the main window of the View"""
-
+import logging
 from tkinter import Frame
+
+modul_logger = logging.getLogger('mtx-gui.view.Mainwindow')
 
 
 class MainWindow(Frame):
@@ -26,8 +27,11 @@ class MainWindow(Frame):
 
     def __init__(self, master=None):
         """init the Frame instance"""
-        Frame.__init__(self, master)
-        self.init()
+        try:
+            Frame.__init__(self, master)
+            self.init()
+        except Exception as ex:
+            modul_logger.error(ex)
 
     def init(self):
         self.master.title("mtx-gui version %s" % self._version)

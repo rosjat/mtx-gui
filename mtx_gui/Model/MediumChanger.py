@@ -14,12 +14,13 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
-
+import logging
 from pyscsi.pyscsi.scsi import SCSI
 from pyscsi.pyscsi.scsi_device import SCSIDevice
 from pyscsi.pyscsi import scsi_enum_modesense as MODESENSE6
 from pyscsi.pyscsi import scsi_enum_readelementstatus as READELEMENTSTATUS
 
+modul_logger = logging.getLogger('mtx-gui.model.MediumChanger')
 
 class MediumChanger(SCSI):
     """
@@ -32,8 +33,11 @@ class MediumChanger(SCSI):
     _name = None
 
     def __init__(self, device=None):
-        SCSI.__init__(self, SCSIDevice(device))
-        self._name = device
+        try:
+            SCSI.__init__(self, SCSIDevice(device))
+            self._name = device
+        except Exception as ex:
+            modul_logger.error(ex)
 
     @property
     def name(self):
@@ -56,29 +60,35 @@ class MediumChanger(SCSI):
         self._data_slots = value
 
     def get_storage_slots(self):
-        eaa = self.modesense6(page_code=MODESENSE6.PAGE_CODE.ELEMENT_ADDRESS_ASSIGNMENT).result['mode_pages'][0]
-        se = self.readelementstatus(start=eaa['first_storage_element_address'],
-                                    num=eaa['num_storage_elements'],
-                                    element_type=READELEMENTSTATUS.ELEMENT_TYPE.STORAGE,
-                                    voltag=1,
-                                    curdata=1,
-                                    dvcid=1,
-                                    alloclen=16384).result['element_status_pages'][0]['element_descriptors']
-        self.storage_slots = se
+        try:
+            eaa = self.modesense6(page_code=MODESENSE6.PAGE_CODE.ELEMENT_ADDRESS_ASSIGNMENT).result['mode_pages'][0]
+            se = self.readelementstatus(start=eaa['first_storage_element_address'],
+                                        num=eaa['num_storage_elements'],
+                                        element_type=READELEMENTSTATUS.ELEMENT_TYPE.STORAGE,
+                                        voltag=1,
+                                        curdata=1,
+                                        dvcid=1,
+                                        alloclen=16384).result['element_status_pages'][0]['element_descriptors']
+            self.storage_slots = se
+        except Exception as ex:
+            modul_logger.error(ex)
 
     def update(self, result):
         pass
 
     def get_data_slots(self):
-        eaa = self.modesense6(page_code=MODESENSE6.PAGE_CODE.ELEMENT_ADDRESS_ASSIGNMENT).result['mode_pages'][0]
-        dte = self.readelementstatus(start=eaa['first_data_transfer_element_address'],
-                                     num=eaa['num_data_transfer_elements'],
-                                     element_type=READELEMENTSTATUS.ELEMENT_TYPE.DATA_TRANSFER,
-                                     voltag=1,
-                                     curdata=1,
-                                     dvcid=1,
-                                     alloclen=16384).result['element_status_pages'][0]['element_descriptors']
-        self.data_slots = dte
+        try:
+            eaa = self.modesense6(page_code=MODESENSE6.PAGE_CODE.ELEMENT_ADDRESS_ASSIGNMENT).result['mode_pages'][0]
+            dte = self.readelementstatus(start=eaa['first_data_transfer_element_address'],
+                                         num=eaa['num_data_transfer_elements'],
+                                         element_type=READELEMENTSTATUS.ELEMENT_TYPE.DATA_TRANSFER,
+                                         voltag=1,
+                                         curdata=1,
+                                         dvcid=1,
+                                         alloclen=16384).result['element_status_pages'][0]['element_descriptors']
+            self.data_slots = dte
+        except Exception as ex:
+            modul_logger.error(ex)
 
     def load(self, slot):
         pass

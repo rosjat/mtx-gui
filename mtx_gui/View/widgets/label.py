@@ -14,37 +14,67 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
-
 """collection of the widgets that are used in the View"""
-
 from functools import partial
+import logging
 from tkinter import Label, PhotoImage, Menu
 from . import _imagepath
 
+modul_logger = logging.getLogger('mtx-gui.view.widgets.label')
+
 
 class SlotLabel(Label):
-    """baseclass for the label widgets"""
-    def __init__(self,parent, slot):
+    """ Baseclass for the label widgets"""
 
-        self._defaultcolor = parent.cget('bg')
-        self._slot = slot
-        self._background = self._defaultcolor
-        self._text = ''
-        self._icon = PhotoImage(file='%s/%s'%(_imagepath,'storage.gif'))
-        Label.__init__(self,
-                       parent,
-                       justify='left',
-                       anchor='w',
-                       image=self._icon,
-                       text=self._text,
-                       bg=self._background,
-                       compound='left')
-        self.grid(padx=2,
-                  pady=2,
-                  stick='ew')
-        self.master.grid_columnconfigure(0, minsize=300)
-        self.grid_propagate(0)
+    _icon = None
+    _background = None
+    _text = ''
+    _defaultcolor = None
+
+    def __init__(self, parent, slot):
+        try:
+            Label.__init__(self,
+                           parent,
+                           justify='left',
+                           anchor='w',
+                           compound='left')
+            self._init_properties(parent, slot)
+            self._init_bindings(slot)
+        except Exception as ex:
+            modul_logger.error(ex)
+
+    def _init_properties(self, parent, slot):
+        """
+            method to init some basic properties of the button
+
+            :param parent: the parent widget of the the button
+            :param mc: the medium changer observable
+        """
+        try:
+            self._defaultcolor = parent.cget('bg')
+            self._slot = slot
+            self.background = self._defaultcolor
+            self.text = ''
+            self.icon = PhotoImage(file='%s/%s' % (_imagepath, 'storage.gif'))
+            self.config(image=self.icon,
+                        text=self.text,
+                        bg=self.background, )
+            self.grid(padx=2,
+                      pady=2,
+                      stick='ew')
+            self.master.grid_columnconfigure(0, minsize=300)
+            self.grid_propagate(0)
+        except Exception as ex:
+            modul_logger.error(ex)
+
+    def _init_bindings(self, slot):
+        """
+            method to init the binding to the callback methods in the observable
+
+            :param mc: a medium changer observable
+        """
         self.bind("<Button-1>", slot.onLeftClick)
+
 
     @property
     def icon(self):
@@ -54,8 +84,7 @@ class SlotLabel(Label):
     @icon.setter
     def icon(self, value):
         """set the gif displayed with the label"""
-        self._icon = None
-        self._icon = PhotoImage(file='%s/%s' % (_imagepath, value))
+        self._icon = value
 
     @property
     def slot(self):
@@ -82,10 +111,6 @@ class SlotLabel(Label):
         """set the color for the label background"""
         self._background = value
 
-    def onRightClick(self, event):
-        """handle the right click event"""
-        print('if you see this you did it wrong !!!')
-
     def menu_action(self, slot):
         print('if you see this you did it wrong !!!')
 
@@ -96,11 +121,14 @@ class SlotLabel(Label):
 class StorageLabel(SlotLabel):
     """class for the storage label"""
     def __init__(self, parent, slot):
-        if type(slot).__name__ != 'StorageSlotObserver':
-            self.destroy()
-        else:
+        try:
             SlotLabel.__init__(self, parent, slot)
-            self.set_visuals()
+            if type(slot).__name__ != 'StorageSlotObserver':
+                self.destroy()
+            else:
+                self.set_visuals()
+        except Exception as ex:
+            modul_logger.error(ex)
 
     def set_visuals(self):
         self.config(bg='green')
@@ -133,11 +161,14 @@ class StorageLabel(SlotLabel):
 class DataLabel(SlotLabel):
     """class for the data label"""
     def __init__(self, parent, slot):
-        if type(slot).__name__ != 'DataSlotObserver':
-            self.destroy()
-        else:
+        try:
             SlotLabel.__init__(self, parent, slot)
-            self.set_visuals()
+            if type(slot).__name__ != 'DataSlotObserver':
+                self.destroy()
+            else:
+                self.set_visuals()
+        except Exception as ex:
+            modul_logger.error(ex)
 
     def set_visuals(self):
         self.config(text=self.slot.model.volumetag)
@@ -175,10 +206,19 @@ class DataLabel(SlotLabel):
 class StatusBar(Label):
 
     def __init__(self, parent):
-        Label.__init__(self, parent, text='', relief='sunken', anchor='w')
-        parent.master.stb = self
-        self.grid(column=0, columnspan=4, sticky='ew')
-        self._text = ''
+        try:
+            Label.__init__(self,
+                           parent,
+                           text='',
+                           relief='sunken',
+                           anchor='w')
+            parent.master.stb = self
+            self.grid(column=0,
+                      columnspan=4,
+                      sticky='ew')
+            self._text = ''
+        except Exception as ex:
+            modul_logger.error(ex)
 
     @property
     def text(self):

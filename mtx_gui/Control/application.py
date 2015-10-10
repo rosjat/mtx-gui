@@ -14,6 +14,8 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
+import logging
+
 from pyscsi.pyscsi.scsi import SCSI
 
 from mtx_gui.View import create_tk_root, start_tk_gui
@@ -22,6 +24,8 @@ from mtx_gui.View.widgets.frame import ScrollFrame, DataFrame, StorageFrame
 from mtx_gui.View.widgets.button import MediumChangerButton
 from mtx_gui.Control.api import *
 from mtx_gui.Control.observable import Observable
+
+modul_logger = logging.getLogger('mtx-gui.control.application')
 
 
 class Application(Observable):
