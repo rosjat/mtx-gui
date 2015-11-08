@@ -16,12 +16,15 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 import logging
 from mtx_gui.Control.application import Application
+from mtx_gui.Control.api import check_root
 
 app_logger = logging.getLogger('mtx-gui')
 app_logger.setLevel(logging.DEBUG)
 
-
-app = Application()
-logging.info('starting mtx-gui')
-app.run()
-logging.info('closing mtx-gui')
+if check_root():
+    app = Application()
+    logging.info('starting mtx-gui')
+    app.run()
+    logging.info('closing mtx-gui')
+else:
+    app_logger.warning('please start mtx-gui with superuser privileges')
