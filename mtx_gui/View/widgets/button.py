@@ -66,8 +66,8 @@ class MediumChangerButton(Button):
         self.config(image=self.icon,
                     text=self._text, )
         self.master.grid_columnconfigure(0, minsize=280)
-        self.grid(padx=10,
-                  pady=10,
+        self.grid(padx=5,
+                  pady=5,
                   column=0,
                   stick='ew')
 

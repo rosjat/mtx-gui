@@ -15,9 +15,8 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 """collection of the widgets that are used in the View"""
-from functools import partial
 import logging
-from tkinter import Label, PhotoImage, Menu
+from tkinter import Label, PhotoImage
 from . import _imagepath
 
 modul_logger = logging.getLogger('mtx-gui.view.widgets.label')
@@ -136,7 +135,6 @@ class StorageLabel(SlotLabel):
         if not self.slot.model.status:
             self.config(bg='red')
             self.config(text='empty')
-        self.update_idletasks()
 
     def onRightClick(self, event):
         """
@@ -176,7 +174,6 @@ class DataLabel(SlotLabel):
         if not self.slot.model.status:
             self.config(bg=self._defaultcolor)
             self.config(text='empty')
-        self.update_idletasks()
 
     def onRightClick(self, event):
         """

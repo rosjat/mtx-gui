@@ -23,7 +23,6 @@ _imagepath = path.join(path.split(path.dirname(__file__))[0], 'View/img')
 
 def create_tk_root():
     root = Tk()
-    root.config(height=400)
     root.grid_propagate(1)
     root.resizable(0, 0)
     return root
