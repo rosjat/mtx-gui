@@ -14,16 +14,12 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
-import logging
-
-from pyscsi.pyscsi.scsi import SCSI
-
 from mtx_gui.View import create_tk_root, start_tk_gui
 from mtx_gui.View.MainWindow import MainWindow
-from mtx_gui.View.widgets.frame import ScrollFrame, DataFrame, StorageFrame
-from mtx_gui.View.widgets.button import MediumChangerButton
+from mtx_gui.View.widgets.frame import MCFrame, DataFrame, StorageFrame
 from mtx_gui.Control.api import *
 from mtx_gui.Control.observable import Observable
+
 
 modul_logger = logging.getLogger('mtx-gui.control.application')
 
@@ -33,12 +29,12 @@ class Application(Observable):
     """
     def __init__(self):
         super().__init__()
-        self._scsi = SCSI(None)
         self._mc = [mc for mc in get_devices() if mc.model.is_medium_changer()]
         self.view = MainWindow(create_tk_root())
         self.model = self
         self._ds = {}
         self._ss = {}
+        self._widgets = []
 
     @property
     def mediumchangers(self):
@@ -50,31 +46,33 @@ class Application(Observable):
 
     def create_widgets(self):
         """creating all the widgets in the main window"""
-        sc = ScrollFrame(self.view)
-        counter = 0
-        for mc in self.mediumchangers:
-            mc.view = MediumChangerButton(sc.canv, mc)
-            mc.application_callback = self.event_sink
-            self.callbacks.update(mc.callbacks)
-            counter += 1
+        self._widgets.append(MCFrame(self.view, self))
 
     def event_sink(self, callback_dict):
         sender = callback_dict['sender']
         event = callback_dict['event']
         action = callback_dict['action']
-        # TODO: make this part less ugly by putting it in extra methods or functions
         if type(sender) == MediumChangerObserver and action == 'init':
-            sender.model.get_data_slots()
-            sender.model.get_storage_slots()
-            self._ds.update({sender: get_data_slots(sender)})
-            self._ss.update({sender: get_storage_slots(sender)})
-            StorageFrame(self.view, self._ss[sender])
-            DataFrame(self.view, self._ds[sender])
-            for s in self._ss[sender]:
-                s.application_callback = self.event_sink
-            for s in self._ds[sender]:
-                s.application_callback = self.event_sink
+            self._init_medium_changer_button(sender)
         if type(sender) == StorageSlotObserver and action == 'init':
-            print('storage Slot - left mouse button')
+            self._init_storage_slot_frame(sender)
+        if type(sender) == DataSlotObserver and action == 'init':
+            self._init_data_slot_frame(sender)
 
+    def _init_medium_changer_button(self, sender):
+        sender.model.get_data_slots()
+        sender.model.get_storage_slots()
+        self._ds.update({sender: get_data_slots(sender)})
+        self._ss.update({sender: get_storage_slots(sender)})
+        StorageFrame(self.view, self._ss[sender])
+        DataFrame(self.view, self._ds[sender])
+        for s in self._ss[sender]:
+            s.application_callback = self.event_sink
+        for s in self._ds[sender]:
+            s.application_callback = self.event_sink
 
+    def _init_storage_slot_frame(self, sender):
+        pass
+
+    def _init_data_slot_frame(self, sender):
+        pass
