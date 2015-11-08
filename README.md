@@ -18,6 +18,9 @@ I also changed dev_mr to the default branch!
 the gui can at least be started now, as long as you are doing it as root for the dev access and you should have
 a media changer or at least as iscsi target set up with tgt (for example)
 
+### 2015-11-08
+Just some minor changes in the GUI, it start to look a bit nicer now.
+
 ## License
 
 mtx-gui is distributed under LGPLv2.1
