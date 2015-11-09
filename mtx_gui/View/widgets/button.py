@@ -21,6 +21,7 @@ from . import _imagepath
 
 modul_logger = logging.getLogger('mtx-gui.view.widgets.button')
 
+
 class MediumChangerButton(Button):
     """
         This class is the basic implementation for the a button widget that controls

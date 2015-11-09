@@ -17,9 +17,9 @@
 from mtx_gui.View import create_tk_root, start_tk_gui
 from mtx_gui.View.MainWindow import MainWindow
 from mtx_gui.View.widgets.frame import MCFrame, DataFrame, StorageFrame
+from mtx_gui.View.widgets.menu import StorageSlotMenu, DataSlotMenu
 from mtx_gui.Control.api import *
 from mtx_gui.Control.observable import Observable
-
 
 modul_logger = logging.getLogger('mtx-gui.control.application')
 
@@ -54,10 +54,10 @@ class Application(Observable):
         action = callback_dict['action']
         if type(sender) == MediumChangerObserver and action == 'init':
             self._init_medium_changer_button(sender)
-        if type(sender) == StorageSlotObserver and action == 'init':
-            self._init_storage_slot_frame(sender)
-        if type(sender) == DataSlotObserver and action == 'init':
-            self._init_data_slot_frame(sender)
+        if type(sender) == StorageSlotObserver and action == 'contextmenu':
+            self._init_storage_slot_contextmenu(sender, event)
+        if type(sender) == DataSlotObserver and action == 'contextmenu':
+            self._init_data_slot_contextmenu(sender, event)
 
     def _init_medium_changer_button(self, sender):
         sender.model.get_data_slots()
@@ -71,24 +71,18 @@ class Application(Observable):
         for s in self._ds[sender]:
             s.application_callback = self.event_sink
 
-    def _init_storage_slot_frame(self, sender):
+    def _init_storage_slot_contextmenu(self, sender, event):
         # figure what and where
-        modul_logger.debug('sender.model.volumetag: %s' % sender.model.volumetag)
         mc = [k for k, v in self._ss.items() if sender in v][0]
-        modul_logger.debug(mc)
-        for sl in mc.model.storage_slots:
-            s = sl['primary_volume_tag'].decode(encoding="utf-8", errors="strict").replace('\x00', '')
-            modul_logger.debug('primary_volume_tag: %s' % s)
-            if s == sender.model.volumetag.decode(encoding="utf-8", errors="strict"):
-                modul_logger.debug('found: %s' % s)
+        with StorageSlotMenu(sender.view, mc.model.data_slots, tearoff=0) as popup:
+            if sender.view.text != 'empty':
+                modul_logger.debug('show contextmenu')
+                popup.tk_popup(event.x_root, event.y_root, 0)
 
-    def _init_data_slot_frame(self, sender):
+    def _init_data_slot_contextmenu(self, sender, event):
         # figure what and where
-        modul_logger.debug('sender.model.volumetag: %s' % sender.model.volumetag)
         mc = [k for k, v in self._ds.items() if sender in v][0]
-        modul_logger.debug(mc)
-        for sl in mc.model.data_slots:
-            s = sl['primary_volume_tag'].decode(encoding="utf-8", errors="strict").replace('\x00', '')
-            modul_logger.debug('primary_volume_tag: %s' % s)
-            if s == sender.model.volumetag.decode(encoding="utf-8", errors="strict"):
-                modul_logger.debug('found: %s' % s)
+        with DataSlotMenu(sender.view, mc.model.storage_slots, tearoff=0) as popup:
+            if sender.view.text != 'empty':
+                modul_logger.debug('show contextmenu')
+                popup.tk_popup(event.x_root, event.y_root, 0)

@@ -44,10 +44,10 @@ class SlotLabel(Label):
 
     def _init_properties(self, parent, slot):
         """
-            method to init some basic properties of the button
+            method to init some basic properties of the label
 
-            :param parent: the parent widget of the the button
-            :param mc: the medium changer observable
+            :param parent: the parent widget of the the label
+            :param slot: the slot observable
         """
         try:
             self._defaultcolor = parent.cget('bg')
@@ -67,9 +67,10 @@ class SlotLabel(Label):
         """
             method to init the binding to the callback methods in the observable
 
-            :param mc: a medium changer observable
+            :param slot: a slot observable
         """
-        self.bind("<Button-1>", slot.onLeftClick)
+        self.bind("<Button-1>", self._slot.onLeftClick)
+        self.bind("<Button-3>", self._slot.onRightClick)
 
 
     @property
@@ -136,19 +137,6 @@ class StorageLabel(SlotLabel):
             self.background = 'red'
             self.text = 'empty'
 
-    def onRightClick(self, event):
-        """
-        if self.slot.status == 'Full ':
-            popup = Menu(self,tearoff=0)
-            popup.add_command(label=u'load', command=partial(self.menu_action, self.slot.slot))
-            try:
-                popup.tk_popup(event.x_root, event.y_root, 0)
-            finally:
-                popup.grab_release()
-                self.updated()
-        """
-        pass
-
     def menu_action(self, slot):
         # self.slot.device.load(slot)
         # TODO: this cant be the final solution
@@ -174,24 +162,6 @@ class DataLabel(SlotLabel):
         if not self.slot.model.status:
             self.background = self._defaultcolor
             self.text = 'empty'
-
-    def onRightClick(self, event):
-        """
-        if self.slot.status != 'Empty':
-            popup = Menu(self,tearoff=0)
-            unloadmenu = Menu(self, tearoff=0)
-            for slot in self.slot.device.storage_slots:
-                if slot.status == 'Empty':
-                    unloadmenu.add_command(label=u'storage slot %s' % slot.slot,
-                                           command=partial(self.menu_action, slot.slot))
-            popup.add_cascade(label='unload', menu=unloadmenu)
-            try:
-                popup.tk_popup(event.x_root, event.y_root, 0)
-            finally:
-                popup.grab_release()
-                self.updated()
-        """
-        pass
 
     def menu_action(self, slot):
         # self.slot.device.unload(slot)
