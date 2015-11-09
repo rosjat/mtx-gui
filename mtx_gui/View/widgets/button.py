@@ -29,6 +29,7 @@ class MediumChangerButton(Button):
     _icon = None
     _defaultcolor = None
     _text = ''
+    _justify = ''
 
     def __init__(self, parent, mc):
         """
@@ -48,10 +49,25 @@ class MediumChangerButton(Button):
     @icon.setter
     def icon(self, value):
         self._icon = value
+        self.config(image=value)
 
     @property
     def text(self):
         return self._text
+
+    @text.setter
+    def text(self, value):
+        self._text = value
+        self.config(text=value)
+
+    @property
+    def justify(self):
+        return self._justify
+
+    @justify.setter
+    def justify(self, value):
+        self._justify
+        self.config(justify=value)
 
     def _init_properties(self, parent, mc):
         """
@@ -61,10 +77,14 @@ class MediumChangerButton(Button):
             :param mc: the medium changer observable
         """
         self._defaultcolor = parent.cget('bg')
-        self._text = mc.model.name
+        inq = mc.model.inquiry().result
+        self.text = "%s(%s)\r\n%s" % (inq['t10_vendor_identification'][:32].decode(encoding="utf-8",
+                                                                                   errors="strict").replace('\x00', ''),
+                                      inq['product_identification'][:32].decode(encoding="utf-8",
+                                                                                errors="strict").replace('\x00', ''),
+                                      mc.model.name)
+        self.justify = 'left'
         self.icon = PhotoImage(file='%s/%s' % (_imagepath, 'mc.gif'))
-        self.config(image=self.icon,
-                    text=self._text, )
         self.master.grid_columnconfigure(0, minsize=280)
         self.grid(padx=5,
                   pady=5,

@@ -55,9 +55,6 @@ class SlotLabel(Label):
             self.background = self._defaultcolor
             self.text = ''
             self.icon = PhotoImage(file='%s/%s' % (_imagepath, 'storage.gif'))
-            self.config(image=self.icon,
-                        text=self.text,
-                        bg=self.background, )
             self.grid(padx=2,
                       pady=2,
                       stick='ew')
@@ -84,6 +81,7 @@ class SlotLabel(Label):
     def icon(self, value):
         """set the gif displayed with the label"""
         self._icon = value
+        self.config(image=value)
 
     @property
     def slot(self):
@@ -99,6 +97,7 @@ class SlotLabel(Label):
     def text(self, value):
         """set the text that is displayed on the label"""
         self._text = value
+        self.config(text=value)
 
     @property
     def background(self):
@@ -109,6 +108,7 @@ class SlotLabel(Label):
     def background(self, value):
         """set the color for the label background"""
         self._background = value
+        self.config(bg=value)
 
     def menu_action(self, slot):
         print('if you see this you did it wrong !!!')
@@ -130,11 +130,11 @@ class StorageLabel(SlotLabel):
             modul_logger.error(ex)
 
     def set_visuals(self):
-        self.config(bg='green')
-        self.config(text=self.slot.model.volumetag.decode(encoding="utf-8", errors="strict"))
+        self.background = 'green'
+        self.text = self.slot.model.volumetag.decode(encoding="utf-8", errors="strict")
         if not self.slot.model.status:
-            self.config(bg='red')
-            self.config(text='empty')
+            self.background = 'red'
+            self.text = 'empty'
 
     def onRightClick(self, event):
         """
@@ -169,11 +169,11 @@ class DataLabel(SlotLabel):
             modul_logger.error(ex)
 
     def set_visuals(self):
-        self.config(text=self.slot.model.volumetag)
-        self.config(bg='orange')
+        self.text = self.slot.model.volumetag
+        self.background = 'orange'
         if not self.slot.model.status:
-            self.config(bg=self._defaultcolor)
-            self.config(text='empty')
+            self.background = self._defaultcolor
+            self.text = 'empty'
 
     def onRightClick(self, event):
         """

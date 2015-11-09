@@ -32,7 +32,7 @@ class Slot(object):
 
         """
         self._slot = slot
-        self._voltag = slot['primary_volume_tag'][0:32]
+        self._voltag = slot['primary_volume_tag'][0:31]
         self._status = slot['full']
 
     @property

@@ -72,7 +72,23 @@ class Application(Observable):
             s.application_callback = self.event_sink
 
     def _init_storage_slot_frame(self, sender):
-        pass
+        # figure what and where
+        modul_logger.debug('sender.model.volumetag: %s' % sender.model.volumetag)
+        mc = [k for k, v in self._ss.items() if sender in v][0]
+        modul_logger.debug(mc)
+        for sl in mc.model.storage_slots:
+            s = sl['primary_volume_tag'].decode(encoding="utf-8", errors="strict").replace('\x00', '')
+            modul_logger.debug('primary_volume_tag: %s' % s)
+            if s == sender.model.volumetag.decode(encoding="utf-8", errors="strict"):
+                modul_logger.debug('found: %s' % s)
 
     def _init_data_slot_frame(self, sender):
-        pass
+        # figure what and where
+        modul_logger.debug('sender.model.volumetag: %s' % sender.model.volumetag)
+        mc = [k for k, v in self._ds.items() if sender in v][0]
+        modul_logger.debug(mc)
+        for sl in mc.model.data_slots:
+            s = sl['primary_volume_tag'].decode(encoding="utf-8", errors="strict").replace('\x00', '')
+            modul_logger.debug('primary_volume_tag: %s' % s)
+            if s == sender.model.volumetag.decode(encoding="utf-8", errors="strict"):
+                modul_logger.debug('found: %s' % s)
