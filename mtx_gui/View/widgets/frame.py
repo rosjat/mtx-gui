@@ -81,8 +81,6 @@ class ScrollFrame(Frame):
         self._widgets = value
 
 
-
-
 class StorageFrame(ScrollFrame):
 
     def __init__(self, parent, slots):
@@ -97,6 +95,7 @@ class StorageFrame(ScrollFrame):
         self._content.grid(row=0, column=0, stick='NSEW')
         for slot in slots:
             label = StorageLabel(group, slot)
+            slot.view = label
             labels.append(label)
         self.canv.config(scrollregion=self.canv.bbox("all"))
         self.widgets = labels
@@ -116,6 +115,7 @@ class DataFrame(ScrollFrame):
         self._content.grid(row=0, column=0, stick='NSEW')
         for slot in slots:
             label = DataLabel(group, slot)
+            slot.view = label
             labels.append(label)
         self.canv.config(scrollregion=self.canv.bbox("all"))
         self.widgets = labels

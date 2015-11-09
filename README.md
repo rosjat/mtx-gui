@@ -1,10 +1,10 @@
 # mtx-gui
 
 
-This will be the "new" version of mtx-gui so it's basically
-not functional right now because I just want to store it somewhere
-safe. But as you may noticed it's going in a different direction then the
-master branch
+This will be the "new" version of mtx-gui so it's not fully functional right now.
+But as you may noticed it's going in a different direction then the master branch.
+It aims to use the python-scsi package (https://github.com/rosjat/python-scsi) but
+it will offer a fallback to the mtx tool if python-scsi package is not installed.
 
 ## Updates 
 
@@ -37,7 +37,8 @@ You can use git to checkout the latest version of the source code using:
 
 It is also available as a downloadable zip archive from:
 
-    https://github.com/rosjat/mtx-gui/archive/master.zip 
+master: https://github.com/rosjat/mtx-gui/archive/master.zip 
+dev:  https://github.com/rosjat/mtx-gui/archive/dev_mr.zip 
 
 
 ## Building and installing
