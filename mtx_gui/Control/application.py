@@ -60,8 +60,10 @@ class Application(Observable):
             self._init_data_slot_contextmenu(sender, event)
 
     def _init_medium_changer_button(self, sender):
+        # issue a modesense + elementstatus
         sender.model.get_data_slots()
         sender.model.get_storage_slots()
+        # now take the collected data an wrap it in nice Slot objects
         self._ds.update({sender: get_data_slots(sender)})
         self._ss.update({sender: get_storage_slots(sender)})
         StorageFrame(self.view, self._ss[sender])
@@ -74,7 +76,7 @@ class Application(Observable):
     def _init_storage_slot_contextmenu(self, sender, event):
         # figure what and where
         mc = [k for k, v in self._ss.items() if sender in v][0]
-        with StorageSlotMenu(sender.view, mc.model.data_slots, tearoff=0) as popup:
+        with StorageSlotMenu(sender.view, self._ds[mc], tearoff=0) as popup:
             if sender.view.text != 'empty':
                 modul_logger.debug('show contextmenu')
                 popup.tk_popup(event.x_root, event.y_root, 0)
@@ -82,7 +84,7 @@ class Application(Observable):
     def _init_data_slot_contextmenu(self, sender, event):
         # figure what and where
         mc = [k for k, v in self._ds.items() if sender in v][0]
-        with DataSlotMenu(sender.view, mc.model.storage_slots, tearoff=0) as popup:
+        with DataSlotMenu(sender.view, self._ss[mc], tearoff=0) as popup:
             if sender.view.text != 'empty':
                 modul_logger.debug('show contextmenu')
                 popup.tk_popup(event.x_root, event.y_root, 0)
