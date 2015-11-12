@@ -60,6 +60,7 @@ class Observable(object):
 class MediumChangerObserver(Observable):
 
     def onLeftClick(self, event):
+        self.view.config(bg='lightblue')
         to_do = {'sender': self,
                  'event': event,
                  'action': 'init', }
@@ -109,14 +110,12 @@ class DataSlotMenuObserver(Observable):
                  'event': event,
                  'action': 'init', }
         self.application_callback(to_do)
-        """
-        if self.slot.status == 'Full ':
-            popup = Menu(self,tearoff=0)
-            popup.add_command(label= u'load',
-                        command=partial(self.menu_action, self.slot.slot))
-            try:
-                popup.tk_popup(event.x_root, event.y_root, 0)
-            finally:
-                popup.grab_release()
-                self.updated()
-        """
+
+
+class StorageSlotMenuObserver(Observable):
+
+    def onLeftClick(self, event):
+        to_do = {'sender': self,
+                 'event': event,
+                 'action': 'init', }
+        self.application_callback(to_do)
