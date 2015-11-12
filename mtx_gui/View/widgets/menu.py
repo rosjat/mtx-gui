@@ -26,10 +26,10 @@ class DataSlotMenu(Menu):
     def __init__(self, parent, slots, **kwargs):
         Menu.__init__(self, parent, kwargs)
         for sl in slots:
-            s = sl['primary_volume_tag'].decode(encoding="utf-8", errors="strict").replace('\x00', '').replace(' ', '')
-            if s == '':
-                modul_logger.debug('%s is empty' % s)
-                self.add_command(label=u'unload to %s' % s, value=sl)
+            m = sl.model
+            v = sl.view
+            if m.primary_volume_tag == '':
+                self.add_command(label=u'unload to %s' % m.element_address)
 
     def __enter__(self):
         return self
@@ -43,11 +43,10 @@ class StorageSlotMenu(Menu):
     def __init__(self, parent, slots, **kwargs):
         Menu.__init__(self, parent, kwargs)
         for sl in slots:
-            s = sl['primary_volume_tag'].decode(encoding="utf-8", errors="strict").replace('\x00', '').replace(' ', '')
-            modul_logger.debug('-%s-' % s)
-            if s == '':
-                modul_logger.debug('%s is not empty' % s)
-                self.add_command(label=u'load to %s' % s, value=sl)
+            m = sl.model
+            v = sl.view
+            if m.primary_volume_tag == '':
+                self.add_command(label=u'load to %s' % m.element_address)
 
     def __enter__(self):
         return self
