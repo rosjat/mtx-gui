@@ -31,19 +31,20 @@ class Slot(object):
                       slot
 
         """
-        self._slot = slot
-        self._voltag = slot['primary_volume_tag'][0:31]
-        self._status = slot['full']
 
-    @property
-    def device(self):
-        """
-            read only property for the _device variable
-
-           :return: string
-
-        """
-        return self._device
+        for key in slot.keys():
+            try:
+                p = getattr(Slot, key)
+                p.fset(self, slot[key])
+            except AttributeError as ex:
+                setattr(self, '_' + key, slot[key])
+            finally:
+                if key != 'except':
+                    p = getattr(Slot, key)
+                    p.fset(self, slot[key])
+                else:
+                    self.Expect = slot[key]
+            modul_logger.debug('%s is set to: %s' % (key, p.fget(self)))
 
     @property
     def name(self):
@@ -109,17 +110,17 @@ class Slot(object):
         self._slot = int(value)
 
     @property
-    def volumetag(self):
+    def primary_volume_tag(self):
         """
             read only property for the _voltag variable
 
             :return: string
 
         """
-        return self._voltag
+        return self._primary_volume_tag
 
-    @volumetag.setter
-    def volumetag(self, value):
+    @primary_volume_tag.setter
+    def primary_volume_tag(self, value):
         """
             setter for the _voltag variable
 
@@ -127,7 +128,96 @@ class Slot(object):
             :return: string
 
         """
-        self._voltag = value
+        v = value.decode(encoding="utf-8", errors="strict").replace('\x00', '').replace(' ', '')
+        self._primary_volume_tag = v
+
+    @property
+    def full(self):
+        return self._full
+
+    @full.setter
+    def full(self, value):
+        self._full = int(value)
+
+    @property
+    def invert(self):
+        return self._invert
+
+    @invert.setter
+    def invert(self, value):
+        self._invert = int(value)
+
+    @property
+    def element_address(self):
+        return self._element_address
+
+    @element_address.setter
+    def element_address(self, value):
+        self._element_address = int(value)
+
+    @property
+    def access(self):
+        return self._access
+
+    @access.setter
+    def access(self, value):
+        self._access = int(value)
+
+    @property
+    def source_storage_element_address(self):
+        return self._source_storage_element_address
+
+    @source_storage_element_address.setter
+    def source_storage_element_address(self, value):
+        self._source_storage_element_address = int(value)
+
+    @property
+    def additional_sense_code_qualifier(self):
+        return self._additional_sense_code_qualifier
+
+    @additional_sense_code_qualifier.setter
+    def additional_sense_code_qualifier(self, value):
+        self._additional_sense_code_qualifier = int(value)
+
+    @property
+    def additional_sense_code(self):
+        return self._additional_sense_code
+
+    @additional_sense_code.setter
+    def additional_sense_code(self, value):
+        self._additional_sense_code = int(value)
+
+    @property
+    def Except(self):
+        return self._except
+
+    @Except.setter
+    def Except(self, value):
+        self._except = int(value)
+
+    @property
+    def medium_type(self):
+        return self._medium_type
+
+    @medium_type.setter
+    def medium_type(self, value):
+        self._medium_type = int(value)
+
+    @property
+    def svalid(self):
+        return self._svalid
+
+    @svalid.setter
+    def svalid(self, value):
+        self._svalid = int(value)
+
+    @property
+    def ed(self):
+        return self._ed
+
+    @ed.setter
+    def ed(self, value):
+        self._ed = int(value)
 
 
 class DataSlot(Slot):
