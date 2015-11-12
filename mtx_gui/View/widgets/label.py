@@ -27,8 +27,10 @@ class SlotLabel(Label):
 
     _icon = None
     _background = None
+    _foreground = None
     _text = ''
-    _defaultcolor = None
+    _default_bg_color = None
+    _default_fg_color = None
 
     def __init__(self, parent, slot):
         try:
@@ -36,7 +38,8 @@ class SlotLabel(Label):
                            parent,
                            justify='left',
                            anchor='w',
-                           compound='left')
+                           compound='left',
+                           padx=20)
             self._init_properties(parent, slot)
             self._init_bindings(slot)
         except Exception as ex:
@@ -50,9 +53,9 @@ class SlotLabel(Label):
             :param slot: the slot observable
         """
         try:
-            self._defaultcolor = parent.cget('bg')
+            self.background = self._default_bg_color = parent.cget('bg')
+            self.foreground = self._default_fg_color = parent.cget('fg')
             self._slot = slot
-            self.background = self._defaultcolor
             self.text = ''
             self.icon = PhotoImage(file='%s/%s' % (_imagepath, 'storage.gif'))
             self.grid(padx=2,
@@ -111,6 +114,17 @@ class SlotLabel(Label):
         self._background = value
         self.config(bg=value)
 
+    @property
+    def foreground(self):
+        """return the color for the label background"""
+        return self._background
+
+    @foreground.setter
+    def foreground(self, value):
+        """set the color for the label background"""
+        self._foreground = value
+        self.config(fg=value)
+
     def menu_action(self, slot):
         print('if you see this you did it wrong !!!')
 
@@ -132,9 +146,10 @@ class StorageLabel(SlotLabel):
 
     def set_visuals(self):
         self.background = 'green'
-        self.text = self.slot.model.volumetag.decode(encoding="utf-8", errors="strict")
-        if not self.slot.model.status:
+        self.text = self.slot.model.primary_volume_tag
+        if not self.slot.model.full:
             self.background = 'red'
+            self.foreground = 'white'
             self.text = 'empty'
 
     def menu_action(self, slot):
@@ -157,10 +172,10 @@ class DataLabel(SlotLabel):
             modul_logger.error(ex)
 
     def set_visuals(self):
-        self.text = self.slot.model.volumetag
+        self.text = self.slot.model.primary_volume_tag
         self.background = 'orange'
-        if not self.slot.model.status:
-            self.background = self._defaultcolor
+        if self.slot.model.full == 0:
+            self.background = self._default_bg_color
             self.text = 'empty'
 
     def menu_action(self, slot):
