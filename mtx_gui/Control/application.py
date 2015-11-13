@@ -17,7 +17,7 @@
 from mtx_gui.View import create_tk_root, start_tk_gui
 from mtx_gui.View.MainWindow import MainWindow
 from mtx_gui.View.widgets.frame import MCFrame, DataFrame, StorageFrame
-from mtx_gui.View.widgets.menu import StorageSlotMenu, DataSlotMenu
+from mtx_gui.View.widgets.menu import SlotMenu
 from mtx_gui.Control.api import *
 from mtx_gui.Control.observable import Observable
 
@@ -63,7 +63,7 @@ class Application(Observable):
         # issue a modesense + elementstatus
         sender.model.get_data_slots()
         sender.model.get_storage_slots()
-        # now take the collected data an wrap it in nice Slot objects
+        # now take the collected data and wrap it in nice Slot objects
         self._ds.update({sender: get_data_slots(sender)})
         self._ss.update({sender: get_storage_slots(sender)})
         StorageFrame(self.view, self._ss[sender])
@@ -74,17 +74,21 @@ class Application(Observable):
             s.application_callback = self.event_sink
 
     def _init_storage_slot_contextmenu(self, sender, event):
-        # figure what and where
         mc = [k for k, v in self._ss.items() if sender in v][0]
-        with StorageSlotMenu(sender.view, self._ds[mc], tearoff=0) as popup:
+        with SlotMenu(sender.view,
+                      self._ds[mc],
+                      u'load to %s',
+                      tearoff=0) as popup:
             if sender.view.text != 'empty':
                 modul_logger.debug('show contextmenu')
                 popup.tk_popup(event.x_root, event.y_root, 0)
 
     def _init_data_slot_contextmenu(self, sender, event):
-        # figure what and where
         mc = [k for k, v in self._ds.items() if sender in v][0]
-        with DataSlotMenu(sender.view, self._ss[mc], tearoff=0) as popup:
+        with SlotMenu(sender.view,
+                      self._ss[mc],
+                      u'unload to %s',
+                      tearoff=0) as popup:
             if sender.view.text != 'empty':
                 modul_logger.debug('show contextmenu')
                 popup.tk_popup(event.x_root, event.y_root, 0)

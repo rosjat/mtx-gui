@@ -17,19 +17,21 @@
 """collection of the widgets that are used in the View"""
 import logging
 from tkinter import Menu
+from functools import partial
 
 modul_logger = logging.getLogger('mtx-gui.view.widgets.menu')
 
 
-class DataSlotMenu(Menu):
+class SlotMenu(Menu):
 
-    def __init__(self, parent, slots, **kwargs):
+    def __init__(self, parent, slots, label_template, **kwargs):
         Menu.__init__(self, parent, kwargs)
         for sl in slots:
             m = sl.model
             v = sl.view
             if m.primary_volume_tag == '':
-                self.add_command(label=u'unload to %s' % m.element_address)
+                self.add_command(label=label_template % m.element_address,
+                                 command=partial(sl.onMenuLeftClick, sl))
 
     def __enter__(self):
         return self
@@ -37,19 +39,3 @@ class DataSlotMenu(Menu):
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.grab_release()
 
-
-class StorageSlotMenu(Menu):
-
-    def __init__(self, parent, slots, **kwargs):
-        Menu.__init__(self, parent, kwargs)
-        for sl in slots:
-            m = sl.model
-            v = sl.view
-            if m.primary_volume_tag == '':
-                self.add_command(label=u'load to %s' % m.element_address)
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.grab_release()

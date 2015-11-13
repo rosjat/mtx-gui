@@ -87,6 +87,12 @@ class StorageSlotObserver(Observable):
                  'action': 'contextmenu', }
         self.application_callback(to_do)
 
+    def onMenuLeftClick(self, event):
+        modul_logger.debug(event.model.element_address)
+        to_do = {'sender': self,
+                 'event': event,
+                 'action': 'load', }
+        self.application_callback(to_do)
 
 class DataSlotObserver(Observable):
 
@@ -102,6 +108,12 @@ class DataSlotObserver(Observable):
                  'action': 'contextmenu', }
         self.application_callback(to_do)
 
+    def onMenuLeftClick(self, event):
+        modul_logger.debug(event.model.element_address)
+        to_do = {'sender': self,
+                 'event': event,
+                 'action': 'unload', }
+        self.application_callback(to_do)
 
 class DataSlotMenuObserver(Observable):
 
