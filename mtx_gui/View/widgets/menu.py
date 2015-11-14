@@ -24,14 +24,18 @@ modul_logger = logging.getLogger('mtx-gui.view.widgets.menu')
 
 class SlotMenu(Menu):
 
-    def __init__(self, parent, slots, label_template, **kwargs):
+    def __init__(self, parent, source, slots, label_template, **kwargs):
         Menu.__init__(self, parent, kwargs)
+        modul_logger.debug('1 -> init menu')
         for sl in slots:
+            modul_logger.debug('2 -> %s' % sl)
             m = sl.model
             v = sl.view
+            modul_logger.debug('3 -> tag: %s' % m.primary_volume_tag)
             if m.primary_volume_tag == '':
+                modul_logger.debug('4 -> add command')
                 self.add_command(label=label_template % m.element_address,
-                                 command=partial(sl.onMenuLeftClick, sl))
+                                 command=partial(sl.onMenuLeftClick, source))
 
     def __enter__(self):
         return self
