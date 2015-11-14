@@ -21,6 +21,12 @@ a media changer or at least as iscsi target set up with tgt (for example)
 ### 2015-11-08
 Just some minor changes in the GUI, it start to look a bit nicer now.
 
+### 2015-11-14
+Ok its basically working now, added code for the load and unload of the slots.
+It's in a dev stage still but with this codebase it should at least do the things
+the old gui have done now. Well except the statusbar but this is going to be implemented 
+as soon as this version is working "well".
+
 ## License
 
 mtx-gui is distributed under LGPLv2.1
@@ -38,6 +44,7 @@ You can use git to checkout the latest version of the source code using:
 It is also available as a downloadable zip archive from:
 
 master: https://github.com/rosjat/mtx-gui/archive/master.zip 
+
 dev:  https://github.com/rosjat/mtx-gui/archive/dev_mr.zip 
 
 
