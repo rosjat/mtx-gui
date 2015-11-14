@@ -22,6 +22,7 @@ from pyscsi.pyscsi import scsi_enum_readelementstatus as READELEMENTSTATUS
 
 modul_logger = logging.getLogger('mtx-gui.model.MediumChanger')
 
+
 class MediumChanger(SCSI):
     """
         Class to collect and manipulate medium changer data that is collected
@@ -30,6 +31,7 @@ class MediumChanger(SCSI):
 
     _storage_slots = None
     _data_slots = None
+    _medium_transport_elements = None
     _name = None
 
     def __init__(self, device=None):
@@ -59,6 +61,14 @@ class MediumChanger(SCSI):
     def data_slots(self, value):
         self._data_slots = value
 
+    @property
+    def medium_transport_elements(self):
+        return self._medium_transport_elements
+
+    @medium_transport_elements.setter
+    def medium_transport_elements(self, value):
+        self._medium_transport_elements = value
+
     def get_storage_slots(self):
         try:
             eaa = self.modesense6(page_code=MODESENSE6.PAGE_CODE.ELEMENT_ADDRESS_ASSIGNMENT).result['mode_pages'][0]
@@ -72,9 +82,6 @@ class MediumChanger(SCSI):
             self.storage_slots = se
         except Exception as ex:
             modul_logger.error(ex)
-
-    def update(self, result):
-        pass
 
     def get_data_slots(self):
         try:
@@ -90,13 +97,56 @@ class MediumChanger(SCSI):
         except Exception as ex:
             modul_logger.error(ex)
 
-    def load(self, slot):
-        pass
+    def get_medium_transport_elements(self):
+        try:
+            eaa = self.modesense6(page_code=MODESENSE6.PAGE_CODE.ELEMENT_ADDRESS_ASSIGNMENT).result['mode_pages'][0]
+            mte = self.readelementstatus(start=eaa['first_medium_transport_element_address'],
+                                         num=eaa['num_medium_transport_elements'],
+                                         element_type=READELEMENTSTATUS.ELEMENT_TYPE.MEDIUM_TRANSPORT,
+                                         voltag=1,
+                                         curdata=1,
+                                         dvcid=1,
+                                         alloclen=16384).result['element_status_pages'][0]['element_descriptors']
+            self.medium_transport_elements = mte
+        except Exception as ex:
+            modul_logger.error(ex)
 
-    def unload(self, to_slot):
-        pass
+    def load(self, data_transfer_element, storage_element):
+        _fmte, _fdte, _fse = self.get_element_offsets(self.medium_transport_elements,
+                                                      self.data_slots,
+                                                      self.storage_slots)
+        modul_logger.debug('dte: %s se: %s' % (data_transfer_element, storage_element))
+        modul_logger.debug('_fmte: %s _fdte: %s _fse: %s' % (_fmte, _fdte, _fse))
+        r = self.movemedium(_fmte,
+                            storage_element,
+                            data_transfer_element).result
+        modul_logger.debug(r)
+
+    def unload(self, data_transfer_element, storage_element):
+        _fmte, _fdte, _fse = self.get_element_offsets(self.medium_transport_elements,
+                                                      self.data_slots,
+                                                      self.storage_slots)
+        r = self.movemedium(_fmte,
+                            data_transfer_element + _fdte,
+                            storage_element + _fse - _fdte).result
+        modul_logger.debug(r)
 
     def is_medium_changer(self):
         if self.inquiry().result['peripheral_device_type'] == 0x08:
             return True
         return False
+
+    def get_element_offsets(self, mte, dte, se):
+        _fmte = 99999999
+        for element in mte:
+            if element['element_address'] < _fmte:
+                _fmte = element['element_address']
+        _fdte = 99999999
+        for element in dte:
+            if element['element_address'] < _fdte:
+                _fdte = element['element_address']
+        _fse = 99999999
+        for element in se:
+            if element['element_address'] < _fse:
+                _fse = element['element_address']
+        return _fmte, _fdte, _fse
