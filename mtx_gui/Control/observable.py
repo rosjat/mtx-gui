@@ -72,6 +72,14 @@ class MediumChangerObserver(Observable):
                  'action': 'contextmenu', }
         self.application_callback(to_do)
 
+    def do_command(self, sender, event, cmd):
+        if cmd == 'load':
+            self.model.load(sender.model.element_address,
+                            event.model.element_address)
+        if cmd == 'unload':
+            self.model.unload(sender.model.element_address,
+                              event.model.element_address)
+
 
 class StorageSlotObserver(Observable):
 
@@ -88,10 +96,9 @@ class StorageSlotObserver(Observable):
         self.application_callback(to_do)
 
     def onMenuLeftClick(self, event):
-        modul_logger.debug(event.model.element_address)
         to_do = {'sender': self,
                  'event': event,
-                 'action': 'load', }
+                 'action': 'unload', }
         self.application_callback(to_do)
 
 class DataSlotObserver(Observable):
@@ -110,9 +117,10 @@ class DataSlotObserver(Observable):
 
     def onMenuLeftClick(self, event):
         modul_logger.debug(event.model.element_address)
+        modul_logger.debug('sender: %s event: %s' % (self, event))
         to_do = {'sender': self,
-                 'event': event,
-                 'action': 'unload', }
+                 'event':  event,
+                 'action': 'load', }
         self.application_callback(to_do)
 
 class DataSlotMenuObserver(Observable):
