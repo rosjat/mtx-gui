@@ -118,8 +118,9 @@ class MediumChanger(SCSI):
         modul_logger.debug('dte: %s se: %s' % (data_transfer_element, storage_element))
         modul_logger.debug('_fmte: %s _fdte: %s _fse: %s' % (_fmte, _fdte, _fse))
         r = self.movemedium(_fmte,
-                            storage_element,
-                            data_transfer_element).result
+                            storage_element + _fse - 1,
+                            data_transfer_element + _fdte).result
+
         modul_logger.debug(r)
 
     def unload(self, data_transfer_element, storage_element):
@@ -128,7 +129,7 @@ class MediumChanger(SCSI):
                                                       self.storage_slots)
         r = self.movemedium(_fmte,
                             data_transfer_element + _fdte,
-                            storage_element + _fse - _fdte).result
+                            storage_element + _fse - 1).result
         modul_logger.debug(r)
 
     def is_medium_changer(self):
