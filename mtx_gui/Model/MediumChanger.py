@@ -28,13 +28,12 @@ class MediumChanger(SCSI):
         Class to collect and manipulate medium changer data that is collected
         with the python-scsi package.
     """
-
-    _storage_slots = None
-    _data_slots = None
-    _medium_transport_elements = None
-    _name = None
-
     def __init__(self, device=None):
+        self._storage_slots = None
+        self._data_slots = None
+        self._medium_transport_elements = None
+        self._name = None
+        
         try:
             SCSI.__init__(self, SCSIDevice(device))
             self._name = device
