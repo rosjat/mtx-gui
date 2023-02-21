@@ -1,34 +1,29 @@
+# coding: utf-8
+
 # Copyright (C) 2015 by Markus Rosjat<markus.rosjat@gmail.com>
+# SPDX-FileCopyrightText: 2015 The mtx-gui Authors
 #
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation; either version 2.1 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
-__all__ = ['DataSlot', 'StorageSlot']
+# SPDX-License-Identifier: LGPL-2.1-or-later
+
+__all__ = ["DataSlot", "StorageSlot"]
 import logging
 
-modul_logger = logging.getLogger('mtx-gui.model.slot')
+modul_logger = logging.getLogger("mtx-gui.model.slot")
+
 
 class Slot(object):
     """
-        class to collect the Information of a storage slot of a  medium changer
+    class to collect the Information of a storage slot of a  medium changer
     """
+
     def __init__(self, slot):
         """
-         :param device: reference to the medium changer were the slot belong to
-         :param name : name of the storage slot element
-         :param status: indicate if the slot is empty or holds a media
-         :param slot: reference to the position of the slot in the medium changer
-         :param volumetag: reference to the name of the media that is stored in this
-                      slot
+        :param device: reference to the medium changer were the slot belong to
+        :param name : name of the storage slot element
+        :param status: indicate if the slot is empty or holds a media
+        :param slot: reference to the position of the slot in the medium changer
+        :param volumetag: reference to the name of the media that is stored in this
+                     slot
 
         """
 
@@ -37,21 +32,21 @@ class Slot(object):
                 p = getattr(Slot, key)
                 p.fset(self, slot[key])
             except AttributeError as ex:
-                setattr(self, '_' + key, slot[key])
+                setattr(self, "_" + key, slot[key])
             finally:
-                if key != 'except':
+                if key != "except":
                     p = getattr(Slot, key)
                     p.fset(self, slot[key])
                 else:
                     self.Expect = slot[key]
-            modul_logger.debug('%s is set to: %s' % (key, p.fget(self)))
+            modul_logger.debug("%s is set to: %s" % (key, p.fget(self)))
 
     @property
     def name(self):
         """
-            read only property for the _name variable
+         read only property for the _name variable
 
-           :return: string
+        :return: string
 
         """
         return self._name
@@ -59,10 +54,10 @@ class Slot(object):
     @name.setter
     def name(self, value):
         """
-            setter for the _name variable
+         setter for the _name variable
 
-           :param value: the new value of the _name variable
-           :return: string
+        :param value: the new value of the _name variable
+        :return: string
 
         """
         self._name = value
@@ -70,9 +65,9 @@ class Slot(object):
     @property
     def status(self):
         """
-            read only property for the _status variable
+         read only property for the _status variable
 
-           :return: string
+        :return: string
 
         """
         return self._status
@@ -80,10 +75,10 @@ class Slot(object):
     @status.setter
     def status(self, value):
         """
-            setter for the _status variable
+        setter for the _status variable
 
-            :param value: the new value of the _status variable
-            :return: string
+        :param value: the new value of the _status variable
+        :return: string
 
         """
         self._status = value
@@ -91,9 +86,9 @@ class Slot(object):
     @property
     def slot(self):
         """
-            read only property for the _slot variable
+         read only property for the _slot variable
 
-           :return: integer
+        :return: integer
 
         """
         return self._slot
@@ -101,10 +96,10 @@ class Slot(object):
     @slot.setter
     def slot(self, value):
         """
-            setter for the _slot variable
+        setter for the _slot variable
 
-            :param value: the new value of the _slot variable
-            :return: integer
+        :param value: the new value of the _slot variable
+        :return: integer
 
         """
         self._slot = int(value)
@@ -112,9 +107,9 @@ class Slot(object):
     @property
     def primary_volume_tag(self):
         """
-            read only property for the _voltag variable
+        read only property for the _voltag variable
 
-            :return: string
+        :return: string
 
         """
         return self._primary_volume_tag
@@ -122,13 +117,17 @@ class Slot(object):
     @primary_volume_tag.setter
     def primary_volume_tag(self, value):
         """
-            setter for the _voltag variable
+        setter for the _voltag variable
 
-            :param value: the new value of the _voltag variable
-            :return: string
+        :param value: the new value of the _voltag variable
+        :return: string
 
         """
-        v = value.decode(encoding="utf-8", errors="strict").replace('\x00', '').replace(' ', '')
+        v = (
+            value.decode(encoding="utf-8", errors="strict")
+            .replace("\x00", "")
+            .replace(" ", "")
+        )
         self._primary_volume_tag = v
 
     @property
@@ -226,4 +225,3 @@ class DataSlot(Slot):
 
 class StorageSlot(Slot):
     pass
-

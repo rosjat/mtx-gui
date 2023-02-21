@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: 2023 The mtx-gui Authors
+#
+# SPDX-License-Identifier: MIT
+
+*.pyc
+*~
+/*.egg-info/
+/.mypy_cache/
+/build/
+/dist/
+__pycache__/
+.idea

@@ -1,32 +1,26 @@
 # coding: utf-8
 
 # Copyright (C) 2015 by Markus Rosjat<markus.rosjat@gmail.com>
+# SPDX-FileCopyrightText: 2015 The mtx-gui Authors
 #
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation; either version 2.1 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
+# SPDX-License-Identifier: LGPL-2.1-or-later
 
+import logging
 import os
 import subprocess
-import logging
 from glob import glob
 
-from mtx_gui.Model.MediumChanger import MediumChanger
-from mtx_gui.Model.Slot import StorageSlot, DataSlot
-from mtx_gui.Control.observable import MediumChangerObserver, StorageSlotObserver, DataSlotObserver
+from Control.observable import (
+    DataSlotObserver,
+    MediumChangerObserver,
+    StorageSlotObserver,
+)
+from Model.MediumChanger import MediumChanger
+from Model.Slot import DataSlot, StorageSlot
 
-modul_logger = logging.getLogger('mtx-gui.control.api')
+modul_logger = logging.getLogger("mtx-gui.control.api")
 
-_scsi_devs = glob('/dev/sg*')
+_scsi_devs = glob("/dev/sg*")
 
 
 def check_root():
@@ -37,7 +31,7 @@ def check_root():
 
 
 def get_mtx_path():
-    result = subprocess.getoutput('which mtx')
+    result = subprocess.getoutput("which mtx")
     return result
 
 
@@ -46,7 +40,9 @@ def get_devices():
 
 
 def get_storage_slots(mc):
-    return [StorageSlotObserver(model=StorageSlot(slot)) for slot in mc.model.storage_slots]
+    return [
+        StorageSlotObserver(model=StorageSlot(slot)) for slot in mc.model.storage_slots
+    ]
 
 
 def get_data_slots(mc):

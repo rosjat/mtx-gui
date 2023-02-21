@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2015 The mtx-gui Authors
+
+SPDX-License-Identifier: LGPL-2.1-or-later
+-->
+
 # mtx-gui
 
 
@@ -6,7 +12,7 @@ But as you may noticed it's going in a different direction then the master branc
 It aims to use the python-scsi package (https://github.com/rosjat/python-scsi) but
 it will offer a fallback to the mtx tool if python-scsi package is not installed.
 
-## Updates 
+## Updates
 
 ### 2015-10-04
 since python-scsi now supports python 3 I started to organize the dev branch so I get a nice base for
@@ -24,7 +30,7 @@ Just some minor changes in the GUI, it start to look a bit nicer now.
 ### 2015-11-14
 Ok its basically working now, added code for the load and unload of the slots.
 It's in a dev stage still but with this codebase it should at least do the things
-the old gui have done now. Well except the statusbar but this is going to be implemented 
+the old gui have done now. Well except the statusbar but this is going to be implemented
 as soon as this version is working "well".
 
 ## License
@@ -43,9 +49,9 @@ You can use git to checkout the latest version of the source code using:
 
 It is also available as a downloadable zip archive from:
 
-master: https://github.com/rosjat/mtx-gui/archive/master.zip 
+master: https://github.com/rosjat/mtx-gui/archive/master.zip
 
-dev:  https://github.com/rosjat/mtx-gui/archive/dev_mr.zip 
+dev:  https://github.com/rosjat/mtx-gui/archive/dev_mr.zip
 
 
 ## Building and installing
@@ -53,7 +59,7 @@ dev:  https://github.com/rosjat/mtx-gui/archive/dev_mr.zip
 Building the module:
 
     $ python3 setup.py build
-    
+
 Installing the module:
 
     $ python3 setup.py install

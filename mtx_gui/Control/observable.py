@@ -1,26 +1,16 @@
 # coding: utf-8
 
 # Copyright (C) 2015 by Markus Rosjat<markus.rosjat@gmail.com>
+# SPDX-FileCopyrightText: 2015 The mtx-gui Authors
 #
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation; either version 2.1 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public License
-# along with this program; if not, see <http://www.gnu.org/licenses/>.
+# SPDX-License-Identifier: LGPL-2.1-or-later
+
 import logging
 
-modul_logger = logging.getLogger('mtx-gui.control.observable')
+modul_logger = logging.getLogger("mtx-gui.control.observable")
 
 
 class Observable(object):
-
     def __init__(self, view=None, model=None):
         self._view = view
         self._model = model
@@ -58,84 +48,99 @@ class Observable(object):
 
 
 class MediumChangerObserver(Observable):
-
     def onLeftClick(self, event):
-        self.view.config(bg='lightblue')
-        to_do = {'sender': self,
-                 'event': event,
-                 'action': 'init', }
+        self.view.config(bg="lightblue")
+        to_do = {
+            "sender": self,
+            "event": event,
+            "action": "init",
+        }
         self.application_callback(to_do)
 
     def onRightClick(self, event):
-        to_do = {'sender': self,
-                 'event': event,
-                 'action': 'contextmenu', }
+        to_do = {
+            "sender": self,
+            "event": event,
+            "action": "contextmenu",
+        }
         self.application_callback(to_do)
 
     def do_command(self, sender, event, cmd):
-        if cmd == 'load':
-            self.model.load(sender.model.element_address,
-                            event.model.element_address)
-        if cmd == 'unload':
-            self.model.unload(sender.model.element_address,
-                              event.model.element_address)
+        if cmd == "load":
+            self.model.load(sender.model.element_address, event.model.element_address)
+        if cmd == "unload":
+            self.model.unload(sender.model.element_address, event.model.element_address)
 
 
 class StorageSlotObserver(Observable):
-
     def onLeftClick(self, event):
-        to_do = {'sender': self,
-                 'event': event,
-                 'action': 'init', }
+        to_do = {
+            "sender": self,
+            "event": event,
+            "action": "init",
+        }
         self.application_callback(to_do)
 
     def onRightClick(self, event):
-        to_do = {'sender': self,
-                 'event': event,
-                 'action': 'contextmenu', }
+        to_do = {
+            "sender": self,
+            "event": event,
+            "action": "contextmenu",
+        }
         self.application_callback(to_do)
 
     def onMenuLeftClick(self, event):
-        to_do = {'sender': self,
-                 'event': event,
-                 'action': 'unload', }
+        to_do = {
+            "sender": self,
+            "event": event,
+            "action": "unload",
+        }
         self.application_callback(to_do)
 
-class DataSlotObserver(Observable):
 
+class DataSlotObserver(Observable):
     def onLeftClick(self, event):
-        to_do = {'sender': self,
-                 'event': event,
-                 'action': 'init', }
+        to_do = {
+            "sender": self,
+            "event": event,
+            "action": "init",
+        }
         self.application_callback(to_do)
 
     def onRightClick(self, event):
-        to_do = {'sender': self,
-                 'event': event,
-                 'action': 'contextmenu', }
+        to_do = {
+            "sender": self,
+            "event": event,
+            "action": "contextmenu",
+        }
         self.application_callback(to_do)
 
     def onMenuLeftClick(self, event):
         modul_logger.debug(event.model.element_address)
-        modul_logger.debug('sender: %s event: %s' % (self, event))
-        to_do = {'sender': self,
-                 'event':  event,
-                 'action': 'load', }
+        modul_logger.debug("sender: %s event: %s" % (self, event))
+        to_do = {
+            "sender": self,
+            "event": event,
+            "action": "load",
+        }
         self.application_callback(to_do)
 
-class DataSlotMenuObserver(Observable):
 
+class DataSlotMenuObserver(Observable):
     def onLeftClick(self, event):
-        to_do = {'sender': self,
-                 'event': event,
-                 'action': 'init', }
+        to_do = {
+            "sender": self,
+            "event": event,
+            "action": "init",
+        }
         self.application_callback(to_do)
 
 
 class StorageSlotMenuObserver(Observable):
-
     def onLeftClick(self, event):
-        to_do = {'sender': self,
-                 'event': event,
-                 'action': 'init', }
+        to_do = {
+            "sender": self,
+            "event": event,
+            "action": "init",
+        }
         self.application_callback(to_do)
